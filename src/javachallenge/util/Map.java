@@ -361,7 +361,7 @@ public class Map implements Serializable, Cloneable {
                     cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
                     try {
                         cellDes = getNeighborCell(cellSr,temp.getDirection());
-                    Unit unit = oldUnits[cellSr.getX()][cellSr.getY()].get(0);
+                        Unit unit = oldUnits[cellSr.getX()][cellSr.getY()].get(0);
                         if (oldUnits[cellSr.getX()][cellSr.getY()].size() > 0)
                             oldUnits[cellSr.getX()][cellSr.getY()].remove(0);
                         if (oldUnits[cellDes.getX()][cellDes.getY()] == null)
@@ -395,6 +395,7 @@ public class Map implements Serializable, Cloneable {
                         e.printStackTrace();
                     }
                     break;
+
                 case SPAWN:
                     cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
                     Unit newUnit = new Unit();
