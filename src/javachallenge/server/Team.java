@@ -17,11 +17,20 @@ public class Team {
     private ArrayList<Unit> units;
     private int arrivedUnitsNum = 0;
     private int unitID = 0;
+    private String name;
 
     public Team(int teamId, int resource) {
         this.teamId = teamId;
         this.resource = resource;
         units = new ArrayList<Unit>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setTeamId(int teamId) {
