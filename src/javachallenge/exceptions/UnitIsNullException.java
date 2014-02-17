@@ -1,4 +1,4 @@
-package exceptions;
+package javachallenge.exceptions;
 
 /**
  * Created by peyman on 2/18/14.

@@ -1,14 +1,13 @@
 package javachallenge.util;
 
-import exceptions.CellIsNullException;
-import exceptions.UnitIsNullException;
+import javachallenge.exceptions.CellIsNullException;
+import javachallenge.exceptions.UnitIsNullException;
 import javachallenge.mapParser.Parser;
 import javachallenge.message.Delta;
 import javachallenge.units.Unit;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by mohammad on 2/5/14.
