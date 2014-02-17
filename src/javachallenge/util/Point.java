@@ -9,8 +9,8 @@ public class Point
         implements Serializable {
 
     private static final long serialVersionUID = -1410766155888091821L;
-    public int x;
-    public int y;
+    private int x;
+    private int y;
 
     public Point() {
         this(0, 0);

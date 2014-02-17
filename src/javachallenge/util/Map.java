@@ -8,6 +8,7 @@ import javachallenge.units.Unit;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by mohammad on 2/5/14.
@@ -383,7 +384,7 @@ public class Map implements Serializable, Cloneable {
                     MineCell mineCell2 = (MineCell) cellSr;
                     mineCell2.setAmount(mineCell2.getAmount() + temp.getChangeValue());
                     break;
-                case AGENT_DISAPPEAR:
+                case AGENT_ARRIVE:
                     cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
                     try{
                         cellSr.getUnit().setArrived(true);
@@ -493,5 +494,10 @@ public class Map implements Serializable, Cloneable {
 
     public boolean isCellInMap(Point position) {
         return isCellInMap(position.getX(), position.getY());
+    }
+
+    public Direction getDirectionFromTwoPoints(Point p1, Point p2) throws CellIsNullException {
+        Cell cell = getCellAtPoint(p1);
+        return getDirectionFromCellPoint(cell, p2);
     }
 }

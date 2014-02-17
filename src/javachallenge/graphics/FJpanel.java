@@ -252,7 +252,7 @@ public class FJpanel extends JPanel implements Runnable{
                     //drawImage(g2d, map[delta.getCell().x][delta.getCell().y], attacker);
                     break;
 
-                case AGENT_DISAPPEAR:
+                case AGENT_ARRIVE:
                     //
                     break;
 //                case SPAWN_ATTACKER:
