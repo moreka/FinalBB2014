@@ -1,8 +1,6 @@
 package javachallenge.message;
 
-import javachallenge.units.Unit;
 import javachallenge.util.Direction;
-import javachallenge.util.NodeDirection;
 import javachallenge.util.Point;
 
 import java.io.Serializable;
