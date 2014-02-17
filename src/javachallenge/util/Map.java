@@ -13,11 +13,11 @@ import java.util.Arrays;
  */
 public class Map implements Serializable, Cloneable {
     private Cell[][] cells;
-    private Node[][] nodes;
+
     private ArrayList<MineCell> mines;
     private int sizeX;
     private int sizeY;
-    private Edge[] walls;
+    //private Edge[] walls;
     private int MINE_RATE;
     private int MINE_AMOUNT;
 
@@ -82,36 +82,22 @@ public class Map implements Serializable, Cloneable {
     }
 
     private void init() {
-        nodes = new Node[2 * sizeX + 2][];
-        this.walls = new Edge[ (3 * (2 * sizeX + 2) * (sizeY + 1)) / 2];
-
-        for (int k = 0; k < 2 * sizeX + 2; k++) {
-            nodes[k] = new Node[sizeY + 1];
-            for (int l = 0; l < sizeY + 1; l++) {
-                nodes[k][l] = new Node(k, l);
-            }
-        }
 
         for(int i = 0; i < this.sizeX; i++){
             for(int j = 0; j < this.sizeY; j++){
                 if(this.cells[i][j].getType().equals(CellType.OUTOFMAP) || this.cells[i][j].getType().equals(CellType.MOUNTAIN) || this.cells[i][j].getType().equals(CellType.RIVER))
                     continue;
                 for (Direction d : Direction.values()){
-                    Node[] temp = getNodesFromCellAt(cells[i][j], d);
-                    NodeDirection[] dirTemp = getNodDirFromCellDir(d);
-                    temp[0].setEdge(temp[1].getEdge(dirTemp[1]),dirTemp[0]); //Same Edge between the Nodes
-                    temp[0].getEdge(dirTemp[0]).setType(EdgeType.OPEN);//set the EdgeType = OPEN
-                    temp[0].getEdge(dirTemp[0]).setNodes(temp);//set the Nodes in Edge Class
                     Cell[] input = new Cell[2];
                     input[0] = cells[i][j];
+                    this.cells[i][j].getEdge(d).setType(EdgeType.OPEN);
                     input[1] = getNeighborCell(cells[i][j], d);
-                    temp[0].getEdge(dirTemp[0]).setCells(input);//set the Cells in Edge Class
-                    this.cells[i][j].setEdge(temp[0].getEdge(dirTemp[0]), d);
-                    if (getNeighborCell(this.cells[i][j],d) != null)
-                        getNeighborCell(this.cells[i][j],d).setEdge(temp[0].getEdge(dirTemp[0]),Direction.values()[(d.ordinal() + 3) % 6]);
+                    if (input[1] != null)
+                        input[1].setEdge(this.cells[i][j].getEdge(d),d);
                 }
             }
         }
+        /*
         int wall_Pointer = 0;
         for(int i = 0; i < 2 * sizeX + 2; i++){
             for(int j = 0; j < sizeY + 1; j++)
@@ -130,6 +116,7 @@ public class Map implements Serializable, Cloneable {
                     }
                 }
         }
+        */
     }
 
     public static Map loadMap(String mapAddr) throws IOException, IndexOutOfBoundsException {
@@ -274,20 +261,6 @@ public class Map implements Serializable, Cloneable {
         return  null;
     }
 
-    public  Node getNodeAt(int x, int y){
-        if(isNodeInMap(x, y))
-            return  nodes[x][y];
-        return  null;
-    }
-
-    public Node getNodeAtPoint(Point point){
-        int x = point.getX();
-        int y = point.getY();
-        if(isNodeInMap(x, y))
-            return this.nodes[x][y];
-        return  null;
-    }
-
     public Cell getNeighborCell(Cell c, Direction dir) {
         int x = 0, y = 0;
         switch (dir) {
@@ -365,15 +338,12 @@ public class Map implements Serializable, Cloneable {
         ArrayList<Unit>[][] oldUnits = initUpdate();
 
         for (Delta temp : deltaList) {
-            Node nodeSr = null;
-            Node nodeDes = null;
+
             Cell cellSr = null;
             Cell cellDes = null;
             switch (temp.getType()) {
                 case WALL_DRAW:
-                    nodeSr = this.nodes[temp.getSource().getX()][temp.getSource().getY()];
-                    nodeDes = this.nodes[temp.getDestination().getX()][temp.getDestination().getY()];
-                    nodeSr.getEdge(getDirectionFromTwoNodes(nodeSr, nodeDes)).setType(EdgeType.WALL);//Edge.EdgeType = WALL
+                   // cellSr =
                     break;
                 case CELL_MOVE:
                     cellSr = this.cells[temp.getSource().getX()][temp.getSource().getY()];
@@ -439,124 +409,12 @@ public class Map implements Serializable, Cloneable {
         }
     }
 
-    public Node getNeighborNode(Node n, NodeDirection dir){
-        int x = 0;
-        int y = 0;
-
-        if((n.getX() + n.getY()) % 2 == 0){
-            switch (dir){
-                case NORTHWEST:
-                    x = n.getX() - 1;
-                    y = n.getY();
-                    break;
-                case NORTHEAST:
-                    x = n.getX() + 1;
-                    y = n.getY();
-                    break;
-                case SOUTH:
-                    x = n.getX();
-                    y = n.getY() + 1;
-                    break;
-            }
-        }
-        else{
-            switch (dir){
-                case NORTH:
-                    x = n.getX();
-                    y = n.getY() - 1;
-                    break;
-                case SOUTHEAST:
-                    x = n.getX() + 1;
-                    y = n.getY();
-                    break;
-                case SOUTHWEST:
-                    x = n.getX() - 1;
-                    y = n.getY();
-                    break;
-            }
-        }
-
-        if(x >= 0 && x <= (2 * this.sizeX + 1) && y >= 0 && y <= sizeY){
-            if(y == 0 && x == (2 * this.sizeX + 1))
-                return  null;
-            if(y % 2 == 0 && y == this.sizeY && x == 0)
-                return  null;
-            if(y % 2 == 1 && y == this.sizeY && x == (2 * this.sizeX + 1))
-                return  null;
-            return  nodes[x][y];
-        }
-        return null;
-    }
-
     public int getSizeX() {
         return sizeX;
     }
 
     public int getSizeY() {
         return sizeY;
-    }
-
-    public Node[] getNodesFromCellAt(Cell c, Direction dir){
-        Node[] res = new Node[2];
-        switch (dir){
-            case NORTHWEST:
-                res[0] = nodes[c.getX() * 2 + (c.getY() % 2)][c.getY()];
-                res[1] = nodes[c.getX() * 2 + (c.getY() % 2) + 1][c.getY()];
-                break;
-            case NORTHEAST:
-                res[0] = nodes[c.getX() * 2 + (c.getY() % 2) + 1][c.getY()];
-                res[1] = nodes[c.getX() * 2 + (c.getY() % 2) + 2][c.getY()];
-                break;
-            case EAST:
-                res[0] = nodes[c.getX() * 2 + (c.getY() % 2) + 2][c.getY()];
-                res[1] = nodes[c.getX() * 2 + (c.getY() % 2) + 2][c.getY() + 1];
-                break;
-            case SOUTHEAST:
-                res[0] = nodes[c.getX() * 2 + (c.getY() % 2) + 2][c.getY() + 1];
-                res[1] = nodes[c.getX() * 2 + (c.getY() % 2) + 1][c.getY() + 1];
-                break;
-            case SOUTHWEST:
-                res[0] = nodes[c.getX() * 2 + (c.getY() % 2) + 1][c.getY() + 1];
-                res[1] = nodes[c.getX() * 2 + (c.getY() % 2)][c.getY() + 1];
-                break;
-            case WEST:
-                res[0] = nodes[c.getX() * 2 + (c.getY() % 2)][c.getY() + 1];
-                res[1] = nodes[c.getX() * 2 + (c.getY() % 2)][c.getY()];
-                break;
-        }
-        return res;
-    }
-
-    private NodeDirection[] getNodDirFromCellDir(Direction dir){
-        NodeDirection[] res = new NodeDirection[2];
-
-        switch (dir){
-            case NORTHWEST:
-                res[0] = NodeDirection.NORTHEAST;
-                res[1] = NodeDirection.SOUTHWEST;
-                break;
-            case NORTHEAST:
-                res[0] = NodeDirection.SOUTHEAST;
-                res[1] = NodeDirection.NORTHWEST;
-                break;
-            case EAST:
-                res[0] = NodeDirection.SOUTH;
-                res[1] = NodeDirection.NORTH;
-                break;
-            case SOUTHEAST:
-                res[1] = NodeDirection.NORTHEAST;
-                res[0] = NodeDirection.SOUTHWEST;
-                break;
-            case SOUTHWEST:
-                res[1] = NodeDirection.SOUTHEAST;
-                res[0] = NodeDirection.NORTHWEST;
-                break;
-            case  WEST:
-                res[1] = NodeDirection.SOUTH;
-                res[0] = NodeDirection.NORTH;
-                break;
-        }
-        return res;
     }
 
     public void print() {
@@ -577,34 +435,11 @@ public class Map implements Serializable, Cloneable {
         }
     }
 
-    public Edge[] getWalls() {
-        return walls;
-    }
+//    public Edge[] getWalls() {
+//        return walls;
+//    }
 
-    public NodeDirection getDirectionFromTwoNodes(Node sr, Node des){
-        NodeDirection res = null;
-        if (sr == null || des == null)
-            return null;
-        for(NodeDirection dir : NodeDirection.values()){
-            if(getNeighborNode(sr,dir) != null &&
-                    getNeighborNode(sr,dir).equals(des)){
-                res = dir;
-                break;
-            }
-        }
-        return  res;
-    }
 
-    public NodeDirection getDirectionFromNodePoint(Node sr, Point des){
-        NodeDirection res = null;
-        for(NodeDirection dir : NodeDirection.values()){
-            if(getNeighborNode(sr,dir).equals(this.nodes[des.getX()][des.getY()])){
-                res = dir;
-                break;
-            }
-        }
-        return res;
-    }
 
     public Direction getDirectionFromCellPoint(Cell sr, Point des){
         Direction res = null;
