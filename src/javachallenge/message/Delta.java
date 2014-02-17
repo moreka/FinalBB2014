@@ -12,61 +12,29 @@ public class Delta
 
     private static final long serialVersionUID = -4314305772186897307L;
     private DeltaType type;
-    private Point source;
-    private Point destination;
-    private Point destinationWallie;
-    private int mineChange;
+    private Point point;
+    private Direction direction;
+    private int changeValue;
     private int teamID;
     private int unitID;
-    private int changeValue;
 
-    public int getChangeValue() {
-        return changeValue;
-    }
-
-    public Delta(DeltaType type, int teamID, int changeValue) {
+    public Delta(DeltaType type, Point point, Direction direction, int changeValue, int teamID, int unitID) {
         this.type = type;
-        this.teamID = teamID;
+        this.point = point;
+        this.direction = direction;
         this.changeValue = changeValue;
-    }
-
-    public  Delta(DeltaType type, Point source, int teamID, int unitID) {
-        this.type = type;
-        this.source = source;
         this.teamID = teamID;
         this.unitID = unitID;
     }
 
-    public Delta(DeltaType type, Point source) {
-        this(type, source, null, null, 0);
-    }
-
-    public Delta(DeltaType type, Point mineCell, int mineChange) {
-        this(type, mineCell, null, null, mineChange);
-    }
-
-    public Delta(DeltaType type, Point source, Point destination) {
-        this(type, source, destination, null, 0);
-    }
-
-    public Delta(DeltaType type, Point source, Point destination, Point destinationWallie) {
-        this(type, source, destination, destinationWallie, 0);
-    }
-
-    public Delta(DeltaType type, Point source, Point destination, Point destinationWallie, int mineChange) {
-        this.type = type;
-        this.source = source;
-        this.destination = destination;
-        this.destinationWallie = destinationWallie;
-        this.mineChange = mineChange;
-    }
-
-    public Point getDestination() {
-        return this.destination;
-    }
-
-    public void setDestination(Point destination) {
-        this.destination = destination;
+    /**
+     * Constructor used in making walls
+     * @param type
+     * @param position
+     * @param direction
+     */
+    public Delta(DeltaType type, Point position, Direction direction) {
+        this(type, position, direction, 0, 0, 0);
     }
 
     public DeltaType getType() {
@@ -77,35 +45,43 @@ public class Delta
         this.type = type;
     }
 
-    public Point getSource() {
-        return source;
+    public Point getPoint() {
+        return point;
     }
 
-    public void setSource(Point source) {
-        this.source = source;
+    public void setPoint(Point point) {
+        this.point = point;
     }
 
-    public int getMineChange() {
-        return mineChange;
+    public Direction getDirection() {
+        return direction;
     }
 
-    public void setMineChange(int mineChange) {
-        this.mineChange = mineChange;
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
-    public Point getDestinationWallie() {
-        return destinationWallie;
+    public int getChangeValue() {
+        return changeValue;
     }
 
-    public void setDestinationWallie(Point destinationWallie) {
-        this.destinationWallie = destinationWallie;
+    public void setChangeValue(int changeValue) {
+        this.changeValue = changeValue;
     }
 
     public int getTeamID() {
         return teamID;
     }
 
+    public void setTeamID(int teamID) {
+        this.teamID = teamID;
+    }
+
     public int getUnitID() {
         return unitID;
+    }
+
+    public void setUnitID(int unitID) {
+        this.unitID = unitID;
     }
 }
