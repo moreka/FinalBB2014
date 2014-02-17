@@ -53,7 +53,7 @@ public class FJframe extends JFrame{
     public String getGameStatus() {
         String format = "<html>Cycle: " + game.getTurn() + "<br>" +
                 "CE Team Score: " + game.getCEScore() + "<br>" +
-                "CE Team Resource: " + game.getCETeam().getResources() + "<br>";
+                "CE Team Resource: " + game.getCETeam().getResource() + "<br>";
         for (MineCell cell : game.getMap().getMines()) {
             format += "Mine [" + cell.getX() + ", " + cell.getY() + "] remaining: " + cell.getAmount() + "<br>";
         }

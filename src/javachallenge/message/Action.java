@@ -15,20 +15,30 @@ public class Action implements Serializable {
     private Direction direction = null;
     private NodeDirection nodeDirection = null;
     private Point position;
+    private int teamId = 0;
 
-    public Action(ActionType type, Point position, Direction direction) {
-        this(type, position, direction, null);
+    public Action(ActionType type, Point position, Direction direction, int teamId) {
+        this(type, position, direction, null, teamId);
     }
 
-    public Action(ActionType type, Point position, NodeDirection nodeDirection) {
-        this(type, position, null, nodeDirection);
+    public Action(ActionType type, Point position, NodeDirection nodeDirection, int teamId) {
+        this(type, position, null, nodeDirection, teamId);
     }
 
-    public Action(ActionType type, Point position, Direction direction, NodeDirection nodeDirection) {
+    public Action(ActionType type, Point position, Direction direction, NodeDirection nodeDirection, int teamId) {
         this.type = type;
         this.direction = direction;
         this.nodeDirection = nodeDirection;
         this.position = position;
+        this.teamId = teamId;
+    }
+
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 
     public ActionType getType() {

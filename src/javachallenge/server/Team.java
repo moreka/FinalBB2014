@@ -10,17 +10,22 @@ import java.util.ArrayList;
  */
 public class Team {
     private int teamId;
-    private int resources;
-//    private Cell spawn;
-//    private Cell destination;
+    private int resource;
+    private int score;
+    private Cell spawn;
+    private Cell destination;
     private ArrayList<Unit> units;
     private int arrivedUnitsNum = 0;
     private int unitID = 0;
 
-    public Team(int teamId, int resources) {
+    public Team(int teamId, int resource) {
         this.teamId = teamId;
-        this.resources = resources;
+        this.resource = resource;
         units = new ArrayList<Unit>();
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 
     public int getTeamId() {
@@ -35,25 +40,25 @@ public class Team {
         return newUnit;
     }
 
-    public int getResources() {
-        return resources;
+    public int getResource() {
+        return resource;
     }
 
-//    public Cell getSpawn() {
-//        return spawn;
-//    }
-//
-//    public void setSpawn(Cell spawn) {
-//        this.spawn = spawn;
-//    }
-//
-//    public Cell getDestination() {
-//        return destination;
-//    }
-//
-//    public void setDestination(Cell destination) {
-//        this.destination = destination;
-//    }
+    public Cell getSpawn() {
+        return spawn;
+    }
+
+    public void setSpawn(Cell spawn) {
+        this.spawn = spawn;
+    }
+
+    public Cell getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Cell destination) {
+        this.destination = destination;
+    }
 
     public ArrayList<Unit> getUnits() {
         return units;
@@ -64,11 +69,11 @@ public class Team {
     }
 
     public void decreaseResources (int input) {
-        resources -= input;
+        resource -= input;
     }
 
     public void increaseResources (int input) {
-        resources += input;
+        resource += input;
     }
 
     public int getArrivedUnitsNum() {
@@ -77,5 +82,9 @@ public class Team {
 
     public void increaseArrivedNumber() {
         arrivedUnitsNum++;
+    }
+
+    public void updateScore(int delta) {
+        this.score += delta;
     }
 }

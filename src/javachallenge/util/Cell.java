@@ -9,16 +9,14 @@ import java.io.Serializable;
  */
 public class Cell implements Serializable {
 
-    private int x;
-    private int y;
+    private Point point;
     private Unit unit;
     private CellType type;
     private Edge[] edges = new Edge[6];
 
 
     public Cell(int x, int y, CellType type) {
-        this.x = x;
-        this.y = y;
+        this.point = new Point(x, y);
         this.type = type;
         for(int i = 0; i < 6; i++)
             edges[i] = new Edge();
@@ -40,20 +38,29 @@ public class Cell implements Serializable {
         this.type = type;
     }
 
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
     public int getX() {
-        return x;
+        return point.getX();
     }
 
     public void setX(int x) {
-        this.x = x;
+        point.setX(x);
     }
 
     public int getY() {
-        return y;
+        return point.getY();
     }
 
     public void setY(int y) {
-        this.y = y;
+        point.setY(y);
     }
 
     public Unit getUnit() {
@@ -67,5 +74,17 @@ public class Cell implements Serializable {
     public boolean isGround() {
         return this.getType() == CellType.TERRAIN || this.getType() == CellType.SPAWN ||
                 this.getType() == CellType.MINE || this.getType() == CellType.DESTINATION;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Cell other = (Cell) obj;
+        return this.point == other.point;
     }
 }

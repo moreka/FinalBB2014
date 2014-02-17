@@ -2,18 +2,15 @@ package javachallenge.util;
 
 import java.io.Serializable;
 
-/**
- * Created by peyman on 2/6/14.
- */
 public class Node implements Serializable {
-    private int x;
-    private int y;
-    //private UnitWallie unitWallie;
+
+    private Point point;
     private Edge[] edges = new Edge[6];
 
+    //private UnitWallie unitWallie;
+
     public Node(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.point = new Point(x, y);
         for(int i = 0; i < 6; i++)
             edges[i] = new Edge();
     }
@@ -26,20 +23,28 @@ public class Node implements Serializable {
         this.edges[dir.ordinal()] = edge;
     }
 
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
     public int getX() {
-        return x;
+        return point.getX();
     }
 
     public void setX(int x) {
-        this.x = x;
+        point.setX(x);
     }
 
     public int getY() {
-        return y;
+        return point.getY();
     }
 
     public void setY(int y) {
-        this.y = y;
+        point.setY(y);
     }
 
     @Override
@@ -51,6 +56,6 @@ public class Node implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Node other = (Node) obj;
-        return this.x == other.x && this.y == other.y;
+        return this.point == other.point;
     }
 }

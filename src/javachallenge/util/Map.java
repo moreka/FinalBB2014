@@ -1,5 +1,6 @@
 package javachallenge.util;
 
+import javachallenge.mapParser.Parser;
 import javachallenge.message.Delta;
 import javachallenge.units.Unit;
 
@@ -37,6 +38,16 @@ public class Map implements Serializable, Cloneable {
         spawnPoints[1] = mapHelper.getSpawn2();
         destinationPoints[1] = mapHelper.getDestination2();
         mines = new ArrayList<MineCell>();
+    }
+
+    public void createJSON() {
+        MapHelper mapHelper = new MapHelper(this);
+        Parser parser = new Parser();
+        try {
+            parser.javaToJson(mapHelper, "net.mapHelper");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public Point getSpawnPoint(int teamId) {
@@ -630,5 +641,9 @@ public class Map implements Serializable, Cloneable {
 
     public void setString(String string) {
         this.string = string;
+    }
+
+    public boolean isCellInMap(Point position) {
+        return isCellInMap(position.getX(), position.getY());
     }
 }
