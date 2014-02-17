@@ -121,20 +121,20 @@ public class MapMaker {
                             printWriter.append(cell[j][i].getName() + " ");
                             if(cell[j][i].getName().equals("5")){
                                 sources[sCount] = new Point();
-                                sources[sCount].x = j;
-                                sources[sCount].y = i;
+                                sources[sCount].setX(j);
+                                sources[sCount].setY(i);
                                 sCount++;
                             }
                             if(cell[j][i].getName().equals("6")){
                                 Destination[dCount] = new Point();
-                                Destination[dCount].x = j;
-                                Destination[dCount].y = i;
+                                Destination[dCount].setX(j);
+                                Destination[dCount].setY(i);
                                 dCount++;
                             }
                             if(cell[j][i].getName().equals("3")){
                                 Point temp = new Point();
-                                temp.x = j;
-                                temp.y = i;
+                                temp.setX(j);
+                                temp.setY(i);
                                 mines.add(temp);
                             }
                         }
@@ -146,13 +146,13 @@ public class MapMaker {
                     }
 
 
-                    String awnser = JOptionPane.showInputDialog("Sources[0]:","yes for " + sources[0].x + "," + sources[0].y + " no for " + sources[1].x + "," + sources[1].y);
+                    String awnser = JOptionPane.showInputDialog("Sources[0]:","yes for " + sources[0].getX() + "," + sources[0].getY() + " no for " + sources[1].getX() + "," + sources[1].getY());
                     if(awnser.toLowerCase() == "no"){
                         Point t = sources[1];
                         sources[1] = sources[0];
                         sources[0] = t;
                     }
-                    awnser = JOptionPane.showInputDialog("Des[0]:","yes for " + Destination[0].x + "," + Destination[0].y + " no for " + Destination[1].x + "," + Destination[1].y);
+                    awnser = JOptionPane.showInputDialog("Des[0]:","yes for " + Destination[0].getX() + "," + Destination[0].getY() + " no for " + Destination[1].getX() + "," + Destination[1].getY());
                     if(awnser.toLowerCase() == "no"){
                         Point t = Destination[1];
                         Destination[1] = Destination[0];
