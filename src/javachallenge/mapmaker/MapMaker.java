@@ -1,4 +1,4 @@
-package mapmaker;
+package javachallenge.mapmaker;
 
 import javachallenge.mapParser.Parser;
 import javachallenge.util.CellType;
@@ -20,8 +20,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-
 
 public class MapMaker {
     public static int size = 20;
