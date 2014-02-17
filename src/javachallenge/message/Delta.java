@@ -37,6 +37,46 @@ public class Delta
         this(type, position, direction, 0, 0, 0);
     }
 
+    /**
+     * Constructor used for changing resources of a team
+     * @param type
+     * @param teamID
+     * @param value
+     */
+    public Delta(DeltaType type, int teamID, int value) {
+        this(type, null, null, value, teamID, 0);
+    }
+
+    /**
+     * Constructor used for arriving or killing units
+     * @param type
+     * @param point
+     */
+    public Delta(DeltaType type, Point point) {
+        this(type, point, null);
+    }
+
+    /**
+     * Constructor used for changing mine amount
+     * @param type
+     * @param point
+     * @param mineRate
+     */
+    public Delta(DeltaType type, Point point, int mineRate) {
+        this(type, point, null, mineRate, 0, 0);
+    }
+
+    /**
+     * Constructor used for spawning new units
+     * @param type
+     * @param point
+     * @param teamId
+     * @param unitId
+     */
+    public Delta(DeltaType type, Point point, int teamId, int unitId) {
+        this(type, point, null, 0, teamId, unitId);
+    }
+
     public DeltaType getType() {
         return type;
     }
