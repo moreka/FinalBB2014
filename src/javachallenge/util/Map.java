@@ -1,5 +1,7 @@
 package javachallenge.util;
 
+import exceptions.CellIsNullException;
+import exceptions.UnitIsNullException;
 import javachallenge.mapParser.Parser;
 import javachallenge.message.Delta;
 import javachallenge.units.Unit;
@@ -62,7 +64,7 @@ public class Map implements Serializable, Cloneable {
         this.destinationPoints = destinationPoints;
     }
 
-    public Cell getSpawnCell(int teamId) {
+    public Cell getSpawnCell(int teamId) throws CellIsNullException {
         return getCellAtPoint(getSpawnPoint(teamId));
     }
 
@@ -70,7 +72,7 @@ public class Map implements Serializable, Cloneable {
         return destinationPoints[teamId];
     }
 
-    public Cell getDestinationCell(int teamId) {
+    public Cell getDestinationCell(int teamId)  throws CellIsNullException {
         return getCellAtPoint(getDestinationPoint(teamId));
     }
 
@@ -91,9 +93,12 @@ public class Map implements Serializable, Cloneable {
                     Cell[] input = new Cell[2];
                     input[0] = cells[i][j];
                     this.cells[i][j].getEdge(d).setType(EdgeType.OPEN);
-                    input[1] = getNeighborCell(cells[i][j], d);
-                    if (input[1] != null)
+                    try{
+                        input[1] = getNeighborCell(cells[i][j], d);
                         input[1].setEdge(this.cells[i][j].getEdge(d),d);
+                    }catch (CellIsNullException e){
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -247,21 +252,21 @@ public class Map implements Serializable, Cloneable {
         return isNodeInMap(p.getX(), p.getY());
     }
 
-    public Cell getCellAt(int x, int y){
+    public Cell getCellAt(int x, int y) throws CellIsNullException {
         if(isCellInMap(x, y))
             return  cells[x][y];
-        return  null;
+        throw new CellIsNullException();
     }
 
-    public  Cell getCellAtPoint(Point point){
+    public  Cell getCellAtPoint(Point point) throws CellIsNullException {
         int x = point.getX();
         int y = point.getY();
         if(isCellInMap(x, y))
             return  cells[x][y];
-        return  null;
+        throw new CellIsNullException();
     }
 
-    public Cell getNeighborCell(Cell c, Direction dir) {
+    public Cell getNeighborCell(Cell c, Direction dir) throws CellIsNullException {
         int x = 0, y = 0;
         switch (dir) {
             case EAST:
@@ -317,17 +322,24 @@ public class Map implements Serializable, Cloneable {
         if(isCellInMap(x, y))
             return cells[x][y];
 
-        return null;
+        throw new CellIsNullException();
     }
 
     private ArrayList<Unit>[][] initUpdate() {
         ArrayList<Unit>[][] units = new ArrayList[sizeX][sizeY];
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
-                if (cells[i][j].getUnit() != null) {
+                /*if (cells[i][j].getUnit() != null) {
                     if (units[i][j] == null)
                         units[i][j] = new ArrayList<Unit>(2);
                     units[i][j].add(cells[i][j].getUnit());
+                }*/
+                try{
+                    if (units[i][j] == null)
+                        units[i][j] = new ArrayList<Unit>(2);
+                    units[i][j].add(cells[i][j].getUnit());
+                }catch (UnitIsNullException e){
+                    e.printStackTrace();
                 }
             }
         }
@@ -338,26 +350,29 @@ public class Map implements Serializable, Cloneable {
         ArrayList<Unit>[][] oldUnits = initUpdate();
 
         for (Delta temp : deltaList) {
-
             Cell cellSr = null;
             Cell cellDes = null;
             switch (temp.getType()) {
                 case WALL_DRAW:
-                   // cellSr =
+                    cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
+                    cellSr.getEdge(temp.getDirection()).setType(EdgeType.WALL);
                     break;
                 case CELL_MOVE:
-                    cellSr = this.cells[temp.getSource().getX()][temp.getSource().getY()];
-                    cellDes = this.cells[temp.getDestination().getX()][temp.getDestination().getY()];
+                    cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
+                    try {
+                        cellDes = getNeighborCell(cellSr,temp.getDirection());
                     Unit unit = oldUnits[cellSr.getX()][cellSr.getY()].get(0);
-
-                    if (oldUnits[cellSr.getX()][cellSr.getY()].size() > 0)
-                        oldUnits[cellSr.getX()][cellSr.getY()].remove(0);
-                    if (oldUnits[cellDes.getX()][cellDes.getY()] == null)
-                        oldUnits[cellDes.getX()][cellDes.getY()] = new ArrayList<Unit>(2);
-                    oldUnits[cellDes.getX()][cellDes.getY()].add(unit);
+                        if (oldUnits[cellSr.getX()][cellSr.getY()].size() > 0)
+                            oldUnits[cellSr.getX()][cellSr.getY()].remove(0);
+                        if (oldUnits[cellDes.getX()][cellDes.getY()] == null)
+                            oldUnits[cellDes.getX()][cellDes.getY()] = new ArrayList<Unit>(2);
+                        oldUnits[cellDes.getX()][cellDes.getY()].add(unit);
+                    }catch (CellIsNullException e){
+                        e.printStackTrace();
+                    }
                     break;
                 case MINE_DISAPPEAR:
-                    cellSr = this.cells[temp.getSource().getX()][temp.getSource().getY()];
+                    cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
                     MineCell mineCell = (MineCell) cellSr;
                     mineCell.setAmount(0);
                     cellSr.setType(CellType.TERRAIN);
@@ -365,19 +380,23 @@ public class Map implements Serializable, Cloneable {
                     ////
                     break;
                 case MINE_CHANGE:
-                    cellSr = this.cells[temp.getSource().getX()][temp.getSource().getY()];
+                    cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
                     MineCell mineCell2 = (MineCell) cellSr;
-                    mineCell2.setAmount(mineCell2.getAmount() - temp.getMineChange());
+                    mineCell2.setAmount(mineCell2.getAmount() + temp.getChangeValue());
                     break;
                 case AGENT_DISAPPEAR:
-                    cellSr = this.cells[temp.getSource().getX()][temp.getSource().getY()];
-                    cellSr.getUnit().setArrived(true);
-                    Unit unitCell2 = cellSr.getUnit();
-                    unitCell2.setCell(null);
-                    cellSr.setUnit(null);
+                    cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
+                    try{
+                        cellSr.getUnit().setArrived(true);
+                        Unit unitCell2 = cellSr.getUnit();
+                        unitCell2.setCell(null);
+                        cellSr.setUnit(null);
+                    }catch (UnitIsNullException e){
+                        e.printStackTrace();
+                    }
                     break;
                 case SPAWN:
-                    cellSr = this.cells[temp.getSource().getX()][temp.getSource().getY()];
+                    cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
                     Unit newUnit = new Unit();
                     newUnit.setCell(cellSr);
                     cellSr.setUnit(newUnit);
@@ -425,7 +444,7 @@ public class Map implements Serializable, Cloneable {
             System.out.println();
         }
     }
-
+/*
     public void printUnits() {
         for (int i = 0; i < this.sizeY; i++) {
             for (int j = 0; j < this.sizeX; j++) {
@@ -434,22 +453,16 @@ public class Map implements Serializable, Cloneable {
             System.out.println();
         }
     }
-
+*/
 //    public Edge[] getWalls() {
 //        return walls;
 //    }
 
-
-
-    public Direction getDirectionFromCellPoint(Cell sr, Point des){
-        Direction res = null;
-        for(Direction dir : Direction.values()){
-            if(getNeighborCell(sr, dir).equals(this.cells[des.getX()][des.getY()])){
-                res = dir;
-                break;
-            }
-        }
-        return  res;
+    public Direction getDirectionFromCellPoint(Cell sr, Point des) throws CellIsNullException {
+        for(Direction dir : Direction.values())
+            if(getNeighborCell(sr, dir).equals(this.cells[des.getX()][des.getY()]))
+                return dir;
+        throw new CellIsNullException();
     }
 
     public static void main(String[] args) {

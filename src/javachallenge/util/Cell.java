@@ -1,5 +1,6 @@
 package javachallenge.util;
 
+import exceptions.UnitIsNullException;
 import javachallenge.units.Unit;
 
 import java.io.Serializable;
@@ -63,8 +64,10 @@ public class Cell implements Serializable {
         point.setY(y);
     }
 
-    public Unit getUnit() {
-        return unit;
+    public Unit getUnit() throws UnitIsNullException {
+        if(unit != null)
+            return unit;
+        throw new UnitIsNullException();
     }
 
     public void setUnit(Unit unit) {
