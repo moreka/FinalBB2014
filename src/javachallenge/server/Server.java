@@ -22,7 +22,7 @@ public class Server {
     public static int CYCLE_LENGTH = 500;
     public static int PORT = 20140;
 
-    public void run(String name) throws InterruptedException, IOException, ClassNotFoundException {
+    public void run() throws InterruptedException, IOException, ClassNotFoundException {
         int num_clients = 2;
 
         ClientConnection[] clientConnections = new ClientConnection[num_clients];
@@ -43,6 +43,7 @@ public class Server {
             c.getOut().writeObject(new InitialMessage(map.getString(), i++, Game.INITIAL_RESOURCE));
             c.getOut().flush();
         }
+
         FJframe graphics = new FJframe(game, game.getMap().getSizeY(), game.getMap().getSizeX());
         FJpanel panel = graphics.getPanel();
 
@@ -54,8 +55,11 @@ public class Server {
         while (!game.isEnded() && turn < 700) {
             System.out.println("Turn: " + (++turn));
 
-            ServerMessage serverMessage = new ServerMessage(game.getWallDeltasList(),
-                    game.getMoveDeltasList(), game.getOtherDeltasList());
+            ServerMessage serverMessage = new ServerMessage(
+                    game.getWallDeltasList(),
+                    game.getMoveDeltasList(),
+                    game.getOtherDeltasList()
+            );
 
             serverMessage.setGameEnded(game.isEnded());
 
@@ -81,17 +85,14 @@ public class Server {
             game.initTurn(turn);
             game.handleActions(actions);
             graphics.repaint();
-//            graphics.updateStat();
             game.endTurn();
             game.getMap().updateMap(game.getOtherDeltasList());
         }
-        PrintWriter wr = new PrintWriter(new FileOutputStream(new File("scores.txt"),true));
-        wr.append(name + ": " + game.getCEScore() + "\n");
     }
 
     public static void main(String[] args) {
         try {
-            new Server().run("KIR");
+            new Server().run();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
