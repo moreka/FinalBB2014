@@ -95,7 +95,7 @@ public class Map implements Serializable, Cloneable {
                     this.cells[i][j].getEdge(d).setType(EdgeType.OPEN);
                     try{
                         input[1] = getNeighborCell(cells[i][j], d);
-                        input[1].setEdge(this.cells[i][j].getEdge(d),d);
+                        input[1].setEdge(this.cells[i][j].getEdge(d),Direction.values()[(d.ordinal() + 3) % 6]);
                     }catch (CellIsNullException e){
                         e.printStackTrace();
                     }
