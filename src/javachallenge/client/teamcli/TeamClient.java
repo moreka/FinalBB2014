@@ -23,6 +23,7 @@ public class TeamClient extends Client {
          */
         for (Unit myUnit : myUnits) {
             move(myUnit, Direction.values()[rnd.nextInt(6)]);
+            attack(myUnit.getCell(),Direction.values()[rnd.nextInt(6)]);
         }
         /**
          * Making walls section

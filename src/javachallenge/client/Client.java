@@ -65,6 +65,14 @@ public abstract class Client {
         );
     }
 
+    public void attack(Cell cell, Direction direction){
+        actionList.add(new Action(
+                ActionType.ATTACK,
+                cell.getPoint(),
+                direction,
+                getTeamID()));
+    }
+
     public int getTeamID() {
         return teamID;
     }
