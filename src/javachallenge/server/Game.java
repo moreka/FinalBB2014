@@ -125,8 +125,6 @@ public class Game {
                 try {
                     if (map.getCellAt(i, j).getUnit() != null)
                         future[i][j].add(map.getCellAt(i, j).getUnit());
-                } catch (UnitIsNullException e) {
-                    e.printStackTrace();
                 } catch (CellIsNullException e) {
                     e.printStackTrace();
                 }
@@ -149,8 +147,6 @@ public class Game {
                     future[destination.getX()][destination.getY()].add(unit);
                 }
             } catch (CellIsNullException e) {
-                e.printStackTrace();
-            } catch (UnitIsNullException e) {
                 e.printStackTrace();
             }
         }
@@ -289,8 +285,6 @@ public class Game {
 
                         System.out.println("[" + team.getName() + "] Spawning a unit with id = " + newUnit.getId());
                     }
-                } catch (UnitIsNullException e) {
-                    e.printStackTrace();
                 } catch (CellIsNullException e) {
                     e.printStackTrace();
                 }

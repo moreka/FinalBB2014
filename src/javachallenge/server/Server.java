@@ -34,8 +34,10 @@ public class Server {
 
         int i = 0;
         for (ClientConnection c : clientConnections) {
-            c.getOut().writeObject(new InitialMessage(map.getString(), i++, Game.INITIAL_RESOURCE));
+            game.addTeam(new Team(i, Game.INITIAL_RESOURCE));
+            c.getOut().writeObject(new InitialMessage(map.getString(), i, Game.INITIAL_RESOURCE));
             c.getOut().flush();
+            i++;
         }
 
 //        FJframe graphics = new FJframe(game, game.getMap().getSizeY(), game.getMap().getSizeX());

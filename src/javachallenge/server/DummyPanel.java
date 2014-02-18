@@ -1,5 +1,7 @@
 package javachallenge.server;
 
+import javachallenge.exceptions.CellIsNullException;
+import javachallenge.exceptions.UnitIsNullException;
 import javachallenge.util.CellType;
 import javachallenge.util.Direction;
 import javachallenge.util.EdgeType;
@@ -54,26 +56,34 @@ public class DummyPanel extends JPanel {
                     x = i * SIZE;
                 else
                     x = i * SIZE + (SIZE / 2);
-                switch (map.getCellAt(i, j).getType()) {
-                    case TERRAIN:
-                        g.drawImage(sand, x, y, null);
-                        break;
-                    case RIVER:
-                        g.drawImage(ocean, x, y, null);
-                        break;
-                    case OUTOFMAP:
-                        g.drawImage(ocean, x, y, null);
+                try {
+                    switch (map.getCellAt(i, j).getType()) {
+                        case TERRAIN:
+                            g.drawImage(sand, x, y, null);
+                            break;
+                        case RIVER:
+                            g.drawImage(ocean, x, y, null);
+                            break;
+                        case OUTOFMAP:
+                            g.drawImage(ocean, x, y, null);
+                    }
+                } catch (CellIsNullException e) {
+                    e.printStackTrace();
                 }
 
-                if (map.getCellAt(i, j).getUnit() != null)
-                    switch (map.getCellAt(i, j).getUnit().getTeamId()) {
-                        case 0:
-                            g.drawImage(ce, x, y, null);
-                            break;
-                        case 1:
-                            g.drawImage(zombie, x, y, null);
-                            break;
-                    }
+                try {
+                    if (map.getCellAt(i, j).getUnit() != null)
+                        switch (map.getCellAt(i, j).getUnit().getTeamId()) {
+                            case 0:
+                                g.drawImage(ce, x, y, null);
+                                break;
+                            case 1:
+                                g.drawImage(zombie, x, y, null);
+                                break;
+                        }
+                } catch (CellIsNullException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -91,10 +101,14 @@ public class DummyPanel extends JPanel {
                 else
                     x = i * SIZE + SIZE / 2;
                 for (Direction dir : Direction.values()) {
-                    if (map.getCellAt(i, j).getEdge(dir) != null &&
-                            map.getCellAt(i, j).getEdge(dir).getType() == EdgeType.WALL) {
-                        g.drawLine(x + xEdge[dir.ordinal()], y + yEdge[dir.ordinal()],
-                                x + xEdge[(dir.ordinal() + 1) % 6], y + yEdge[(dir.ordinal() + 1) % 6]);
+                    try {
+                        if (map.getCellAt(i, j).getEdge(dir) != null &&
+                                map.getCellAt(i, j).getEdge(dir).getType() == EdgeType.WALL) {
+                            g.drawLine(x + xEdge[dir.ordinal()], y + yEdge[dir.ordinal()],
+                                    x + xEdge[(dir.ordinal() + 1) % 6], y + yEdge[(dir.ordinal() + 1) % 6]);
+                        }
+                    } catch (CellIsNullException e) {
+                        e.printStackTrace();
                     }
                 }
             }

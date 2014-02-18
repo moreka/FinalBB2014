@@ -329,17 +329,10 @@ public class Map implements Serializable, Cloneable {
         ArrayList<Unit>[][] units = new ArrayList[sizeX][sizeY];
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
-                /*if (cells[i][j].getUnit() != null) {
+                if (cells[i][j].getUnit() != null) {
                     if (units[i][j] == null)
                         units[i][j] = new ArrayList<Unit>(2);
                     units[i][j].add(cells[i][j].getUnit());
-                }*/
-                try{
-                    if (units[i][j] == null)
-                        units[i][j] = new ArrayList<Unit>(2);
-                    units[i][j].add(cells[i][j].getUnit());
-                }catch (UnitIsNullException e){
-                    e.printStackTrace();
                 }
             }
         }
@@ -386,14 +379,10 @@ public class Map implements Serializable, Cloneable {
                     break;
                 case AGENT_ARRIVE:
                     cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
-                    try{
-                        cellSr.getUnit().setArrived(true);
-                        Unit unitCell2 = cellSr.getUnit();
-                        unitCell2.setCell(null);
-                        cellSr.setUnit(null);
-                    }catch (UnitIsNullException e){
-                        e.printStackTrace();
-                    }
+                    cellSr.getUnit().setArrived(true);
+                    Unit unitCell2 = cellSr.getUnit();
+                    unitCell2.setCell(null);
+                    cellSr.setUnit(null);
                     break;
 
                 case SPAWN:

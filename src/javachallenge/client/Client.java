@@ -33,8 +33,6 @@ public abstract class Client {
             if (delta.getType() == DeltaType.SPAWN && delta.getTeamID() == this.getTeamID()) {
                 try {
                     myUnits.add(map.getCellAtPoint(delta.getPoint()).getUnit());
-                } catch (UnitIsNullException e) {
-                    e.printStackTrace();
                 } catch (CellIsNullException e) {
                     e.printStackTrace();
                 }

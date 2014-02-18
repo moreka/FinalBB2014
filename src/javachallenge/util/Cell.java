@@ -64,10 +64,8 @@ public class Cell implements Serializable {
         point.setY(y);
     }
 
-    public Unit getUnit() throws UnitIsNullException {
-        if(unit != null)
-            return unit;
-        throw new UnitIsNullException();
+    public Unit getUnit() {
+        return unit;
     }
 
     public void setUnit(Unit unit) {

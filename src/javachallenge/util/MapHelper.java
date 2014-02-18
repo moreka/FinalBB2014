@@ -1,5 +1,7 @@
 package javachallenge.util;
 
+import javachallenge.exceptions.CellIsNullException;
+
 /**
  * Created by merhdad on 2/15/14.
  */
@@ -36,7 +38,11 @@ public class MapHelper {
         cells = new CellType[sizeX][sizeY];
         for (int i = 0; i < map.getSizeX(); i++)
             for (int j = 0; j < map.getSizeY(); j++)
-                cells[i][j] = map.getCellAt(i, j).getType();
+                try {
+                    cells[i][j] = map.getCellAt(i, j).getType();
+                } catch (CellIsNullException e) {
+                    e.printStackTrace();
+                }
         spawn1 = map.getSpawnPoint(0);
         destination1 = map.getDestinationPoint(0);
         spawn2 = map.getSpawnPoint(1);
