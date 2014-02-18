@@ -1,14 +1,13 @@
 package javachallenge.client;
 
+import javachallenge.exceptions.CellIsNullException;
+import javachallenge.exceptions.UnitIsNullException;
 import javachallenge.message.*;
 import javachallenge.units.Unit;
 import javachallenge.util.*;
 
 import java.util.ArrayList;
 
-/**
- * Created by mohammad on 2/5/14.
- */
 public abstract class Client {
     protected ArrayList<Action> actionList;
     protected Map map;
@@ -30,16 +29,18 @@ public abstract class Client {
         this.map.updateMap(message.getMoveDeltaList());
         this.map.updateMap(message.getOtherDeltaList());
 
-        for (Delta d : message.getOtherDeltaList()) {
-            if (d.getType() == DeltaType.SPAWN && d.getTeamID() == this.getTeamID()) {
-                myUnits.add(map.getCellAt(d.getSource().getX(), d.getSource().getY()).getUnit());
+        for (Delta delta : message.getOtherDeltaList()) {
+            if (delta.getType() == DeltaType.SPAWN && delta.getTeamID() == this.getTeamID()) {
+                try {
+                    myUnits.add(map.getCellAtPoint(delta.getPoint()).getUnit());
+                } catch (UnitIsNullException e) {
+                    e.printStackTrace();
+                } catch (CellIsNullException e) {
+                    e.printStackTrace();
+                }
             }
-            else if(d.getType() == DeltaType.RESOURCE_CHANGE && d.getTeamID() == this.getTeamID()){
-                this.resources = this.resources + d.getChangeValue();
-            }
-            for (int i = myUnits.size() - 1; i >= 0; i--) {
-                if (myUnits.get(i).getCell() == null)
-                    myUnits.remove(i);
+            else if(delta.getType() == DeltaType.RESOURCE_CHANGE && delta.getTeamID() == this.getTeamID()){
+                this.resources = this.resources + delta.getChangeValue();
             }
         }
     }
@@ -49,12 +50,21 @@ public abstract class Client {
     }
     public void move(Unit unit, Direction direction) {
         if (!unit.isArrived())
-            actionList.add(new Action(ActionType.MOVE, new Point(unit.getCell().getX(), unit.getCell().getY()), direction));
+            actionList.add(new Action(
+                    ActionType.MOVE,
+                    unit.getCell().getPoint(),
+                    direction,
+                    this.getTeamID())
+            );
     }
 
     public void makeWall(Cell cell, Direction direction) {
-        Node[] nodes = map.getNodesFromCellAt(cell, direction);
-        actionList.add(new Action(ActionType.MAKE_WALL, new Point(nodes[0].getX(), nodes[0].getY()), map.getDirectionFromTwoNodes(nodes[0], nodes[1])));
+        actionList.add(new Action(
+                ActionType.MAKE_WALL,
+                cell.getPoint(),
+                direction,
+                getTeamID())
+        );
     }
 
     public int getTeamID() {
