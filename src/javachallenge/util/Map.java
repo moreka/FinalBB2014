@@ -348,6 +348,10 @@ public class Map implements Serializable, Cloneable {
                     cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
                     cellSr.getEdge(temp.getDirection()).setType(EdgeType.WALL);
                     break;
+                case WALL_DESTROY:
+                    cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
+                    cellSr.getEdge(temp.getDirection()).setType(EdgeType.OPEN);
+                    break;
                 case CELL_MOVE:
                     cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
                     try {
@@ -391,7 +395,6 @@ public class Map implements Serializable, Cloneable {
                     newUnit.setId(temp.getUnitID());
                     newUnit.setTeamId(temp.getTeamID());
                     System.out.println("Spawning a new unit with ID " + newUnit.getId() + " teamID: " + newUnit.getTeamId());
-
                     break;
             }
         }
