@@ -4,16 +4,10 @@
 
 package javachallenge.server;
 
-import javachallenge.graphics.FJframe;
-import javachallenge.graphics.FJpanel;
 import javachallenge.message.*;
 import javachallenge.util.Map;
-import sun.misc.Cleaner;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
@@ -44,11 +38,11 @@ public class Server {
             c.getOut().flush();
         }
 
-        FJframe graphics = new FJframe(game, game.getMap().getSizeY(), game.getMap().getSizeX());
-        FJpanel panel = graphics.getPanel();
+//        FJframe graphics = new FJframe(game, game.getMap().getSizeY(), game.getMap().getSizeX());
+//        FJpanel panel = graphics.getPanel();
 
-//        DummyGraphics graphics = new DummyGraphics(map);
-  //      graphics.setVisible(true);
+        DummyGraphics graphics = new DummyGraphics(map);
+        graphics.setVisible(true);
 
         int turn = 0;
 

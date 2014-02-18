@@ -2,15 +2,10 @@ package javachallenge.mapParser;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javachallenge.util.Map;
 import javachallenge.util.MapHelper;
 
 import java.io.*;
 
-
-/**
- * Created by merhdad on 2/15/14.
- */
 public class Parser {
     public MapHelper jsonToJava (String filePath) throws IOException{
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
