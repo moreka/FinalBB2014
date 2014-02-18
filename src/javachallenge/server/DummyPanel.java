@@ -27,7 +27,7 @@ public class DummyPanel extends JPanel {
     private final int SIZE = 48;
 
     private final int NUM_STEPS = 10;
-    private final int ANIM_LEN = 250;
+    private final int ANIM_LEN = 100;
 
     private HashMap<Unit, Point> lastPosition = new HashMap<Unit, Point>();
 
