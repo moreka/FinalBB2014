@@ -14,9 +14,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by mohammad on 2/11/14.
- */
 public class DummyPanel extends JPanel {
     private final Map map;
     private Image bufferImage;
