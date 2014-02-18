@@ -124,4 +124,16 @@ public class Delta
     public void setUnitID(int unitID) {
         this.unitID = unitID;
     }
+
+    @Override
+    public String toString() {
+        return "Delta{" +
+                "type=" + type +
+                ", point=" + point +
+                ", direction=" + direction +
+                ", changeValue=" + changeValue +
+                ", teamID=" + teamID +
+                ", unitID=" + unitID +
+                '}';
+    }
 }
