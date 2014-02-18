@@ -37,6 +37,7 @@ public class Game {
     private ArrayList<Delta> otherDeltas = new ArrayList<Delta>();
 
     private int turn;
+    private int winner;
 
     public int getTurn() {
         return turn;
@@ -317,6 +318,15 @@ public class Game {
         this.turn = turn;
         if (turn == GAME_LENGTH) {
             ended = true;
+            if (teams[0].getArrivedUnitsNum() > teams[1].getArrivedUnitsNum())
+                winner = 0;
+            else if (teams[0].getArrivedUnitsNum() < teams[1].getArrivedUnitsNum())
+                winner = 1;
+            else
+                if (teams[0].getResource() > teams[1].getResource())
+                    winner = 0;
+                else if (teams[0].getResource() < teams[1].getResource())
+                    winner = 1;
         }
     }
 
