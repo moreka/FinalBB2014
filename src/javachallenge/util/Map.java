@@ -1,14 +1,12 @@
 package javachallenge.util;
 
 import javachallenge.exceptions.CellIsNullException;
-import javachallenge.exceptions.UnitIsNullException;
 import javachallenge.mapParser.Parser;
 import javachallenge.message.Delta;
 import javachallenge.units.Unit;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by mohammad on 2/5/14.
@@ -346,9 +344,13 @@ public class Map implements Serializable, Cloneable {
             Cell cellSr = null;
             Cell cellDes = null;
             switch (temp.getType()) {
-                case WALL_DRAW:
+                case WALL_MAKE:
                     cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
                     cellSr.getEdge(temp.getDirection()).setType(EdgeType.WALL);
+                    break;
+                case WALL_DESTROY:
+                    cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
+                    cellSr.getEdge(temp.getDirection()).setType(EdgeType.OPEN);
                     break;
                 case CELL_MOVE:
                     cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
@@ -393,7 +395,6 @@ public class Map implements Serializable, Cloneable {
                     newUnit.setId(temp.getUnitID());
                     newUnit.setTeamId(temp.getTeamID());
                     System.out.println("Spawning a new unit with ID " + newUnit.getId() + " teamID: " + newUnit.getTeamId());
-
                     break;
             }
         }

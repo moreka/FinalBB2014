@@ -1,10 +1,8 @@
 package javachallenge.server;
 
 import javachallenge.exceptions.CellIsNullException;
-import javachallenge.exceptions.UnitIsNullException;
 import javachallenge.units.Unit;
 import javachallenge.message.Action;
-import javachallenge.message.ActionType;
 import javachallenge.message.Delta;
 import javachallenge.message.DeltaType;
 import javachallenge.util.*;
@@ -15,10 +13,14 @@ import java.util.*;
 public class Game {
 
     private static final int MINE_RATE = 4;                 // resource per turn
-    private static final int COST_WALL = 10;
+    private static final int COST_MAKE_WALL = 10;
+    private static final int COST_DESTROY_WALL = 6;
     private static final int GAME_LENGTH = 700;             // turn
     private static final int UNIT_SPAWN_RATE = 2;           // each 2 turn
+    private static final int WALLS_MADE_PER_TURN = 3;
+    private static final int WALLS_DESTROYED_PER_TURN = 2;
     public static final int INITIAL_RESOURCE = 150;         // each team's initial resource
+
 
     public static final int WALL_DRAW_SCORE = -3;
     private static final int UNIT_ARRIVAL_SCORE = 5;
@@ -35,6 +37,7 @@ public class Game {
     private ArrayList<Delta> otherDeltas = new ArrayList<Delta>();
 
     private int turn;
+    private int winner;
 
     public int getTurn() {
         return turn;
@@ -67,8 +70,10 @@ public class Game {
     }
 
     public void handleActions(ArrayList<Action> actions) {
+        ArrayList<Action> attackActions = new ArrayList<Action>();
         ArrayList<Action> moveActions = new ArrayList<Action>();
-        ArrayList<Action> wallActions = new ArrayList<Action>();
+        ArrayList<Action> makeWallActions = new ArrayList<Action>();
+        ArrayList<Action> destroyWallActions = new ArrayList<Action>();
 
         for (Action action : actions) {
             if (action.isValid())
@@ -77,36 +82,81 @@ public class Game {
                         moveActions.add(action);
                         break;
                     case MAKE_WALL:
-                        wallActions.add(action);
+                        makeWallActions.add(action);
+                        break;
+                    case DESTROY_WALL:
+                        destroyWallActions.add(action);
+                        break;
+                    case ATTACK:
+                        attackActions.add(action);
                         break;
                 }
         }
-
-        handleWallActions(wallActions);
+        handleAttacks(attackActions);
+        map.updateMap(this.getAttackDeltas());
+        handleWallActions(makeWallActions, destroyWallActions);
         map.updateMap(this.getWallDeltasList());
         handleMoveActions(moveActions);
         map.updateMap(this.getMoveDeltasList());
     }
 
-    public void handleWallActions(ArrayList<Action> walls) {
-        Collections.shuffle(walls);
-
-        for (Action wallAction : walls) {
+    private void handleAttacks(ArrayList<Action> attacks) {
+        for (Action attack: attacks) {
             try {
-                Cell cell = map.getCellAtPoint(wallAction.getPosition());
-                Edge edge = cell.getEdge(wallAction.getDirection());
+                Cell cell = map.getCellAtPoint(attack.getPosition());
+                Cell neighborCell = map.getNeighborCell(cell, attack.getDirection());
+                if (neighborCell.isGround()) {
+                    attackDeltas.add(new Delta(DeltaType.AGENT_ATTACK, cell.getPoint(), attack.getDirection()));
+                    if(neighborCell.getUnit() != null)
+                        attackDeltas.add(new Delta(DeltaType.AGENT_KILL, neighborCell.getPoint()));
+                }
+            } catch (CellIsNullException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-                Team team = getTeam(wallAction.getTeamId());
+    public void handleWallActions(ArrayList<Action> makeWalls, ArrayList<Action> destroyWalls) {
+        int[] makeWallsNumber = new int[2];
+        int[] destroyWallsNumber = new int[2];
 
-                if (team.getResource() >= COST_WALL &&
-                        wallAction.getType() == ActionType.MAKE_WALL &&
-                        edge.getType() == EdgeType.OPEN) {
+        for (Action makeWallAction : makeWalls) {
+            try {
+                Cell cell = map.getCellAtPoint(makeWallAction.getPosition());
+                Edge edge = cell.getEdge(makeWallAction.getDirection());
 
-                    team.decreaseResources(COST_WALL);
-                    team.updateScore(-WALL_DRAW_SCORE);
+                Team team = getTeam(makeWallAction.getTeamId());
 
-                    wallDeltas.add(new Delta(DeltaType.WALL_DRAW, wallAction.getPosition(), wallAction.getDirection()));
-                    otherDeltas.add(new Delta(DeltaType.RESOURCE_CHANGE, team.getTeamId(), -COST_WALL));
+                if (team.getResource() >= COST_MAKE_WALL && edge.getType() == EdgeType.OPEN &&
+                        makeWallsNumber[team.getTeamId()] < WALLS_MADE_PER_TURN) {
+
+                    team.decreaseResources(COST_MAKE_WALL);
+
+                    makeWallsNumber[team.getTeamId()]++;
+
+                    wallDeltas.add(new Delta(DeltaType.WALL_MAKE, makeWallAction.getPosition(), makeWallAction.getDirection()));
+                    otherDeltas.add(new Delta(DeltaType.RESOURCE_CHANGE, team.getTeamId(), -COST_MAKE_WALL));
+                }
+            } catch (CellIsNullException e) {
+                e.printStackTrace();
+            }
+        }
+        for (Action destroyWallAction : destroyWalls) {
+            try {
+                Cell cell = map.getCellAtPoint(destroyWallAction.getPosition());
+                Edge edge = cell.getEdge(destroyWallAction.getDirection());
+
+                Team team = getTeam(destroyWallAction.getTeamId());
+
+                if (team.getResource() >= COST_DESTROY_WALL && edge.getType() == EdgeType.WALL &&
+                        destroyWallsNumber[team.getTeamId()] < WALLS_DESTROYED_PER_TURN) {
+
+                    team.decreaseResources(COST_DESTROY_WALL);
+
+                    destroyWallsNumber[team.getTeamId()]++;
+
+                    wallDeltas.add(new Delta(DeltaType.WALL_DESTROY, destroyWallAction.getPosition(), destroyWallAction.getDirection()));
+                    otherDeltas.add(new Delta(DeltaType.RESOURCE_CHANGE, team.getTeamId(), -COST_DESTROY_WALL));
                 }
             } catch (CellIsNullException e) {
                 e.printStackTrace();
@@ -268,6 +318,15 @@ public class Game {
         this.turn = turn;
         if (turn == GAME_LENGTH) {
             ended = true;
+            if (teams[0].getArrivedUnitsNum() > teams[1].getArrivedUnitsNum())
+                winner = 0;
+            else if (teams[0].getArrivedUnitsNum() < teams[1].getArrivedUnitsNum())
+                winner = 1;
+            else
+                if (teams[0].getResource() > teams[1].getResource())
+                    winner = 0;
+                else if (teams[0].getResource() < teams[1].getResource())
+                    winner = 1;
         }
     }
 
@@ -294,6 +353,10 @@ public class Game {
 
     public void endTurn() {
         handleSpawns();
+    }
+
+    public ArrayList<Delta> getAttackDeltas() {
+        return attackDeltas;
     }
 
     public ArrayList<Delta> getWallDeltasList() {
