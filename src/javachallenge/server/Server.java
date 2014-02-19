@@ -24,14 +24,17 @@ public class Server {
 
         ServerSocket serverSocket = new ServerSocket(PORT);
 
+        Map map = Map.loadMap("Easy.map");
+        Game game = new Game(map);
+
+        DummyGraphics graphics = new DummyGraphics(game);
+        graphics.setVisible(true);
+
         for (int i = 0; i < num_clients; i++) {
             System.out.println("Waiting for player " + i + " to connect ...");
             clientConnections[i] = new ClientConnection(serverSocket.accept());
             System.out.println("Player " + i + " connected!");
         }
-
-        Map map = Map.loadMap("Easy.map");
-        Game game = new Game(map);
 
         int i = 0;
         for (ClientConnection c : clientConnections) {
@@ -43,9 +46,6 @@ public class Server {
 
 //        FJframe graphics = new FJframe(game, game.getMap().getSizeY(), game.getMap().getSizeX());
 //        FJpanel panel = graphics.getPanel();
-
-        DummyGraphics graphics = new DummyGraphics(game);
-        graphics.setVisible(true);
 
         int turn = 0;
 
