@@ -31,6 +31,8 @@ public class TeamClient extends Client {
         try {
             makeWall(map.getCellAt(rnd.nextInt(map.getSizeX()), rnd.nextInt(map.getSizeY())),
                 Direction.values()[rnd.nextInt(6)]);
+            destroyWall(map.getCellAt(rnd.nextInt(map.getSizeX()), rnd.nextInt(map.getSizeY())),
+                    Direction.values()[rnd.nextInt(6)]);
         } catch (CellIsNullException e) {
             e.printStackTrace();
         }

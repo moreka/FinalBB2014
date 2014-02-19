@@ -65,7 +65,17 @@ public abstract class Client {
         );
     }
 
+    public void destroyWall(Cell cell, Direction direction) {
+        actionList.add(new Action(
+                ActionType.DESTROY_WALL,
+                cell.getPoint(),
+                direction,
+                getTeamID()));
+    }
+
     public void attack(Cell cell, Direction direction){
+        if (cell == null)
+            return;
         actionList.add(new Action(
                 ActionType.ATTACK,
                 cell.getPoint(),
