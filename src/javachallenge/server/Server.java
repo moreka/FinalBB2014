@@ -5,6 +5,7 @@
 package javachallenge.server;
 
 import javachallenge.message.*;
+import javachallenge.util.Logger;
 import javachallenge.util.Map;
 
 import java.io.IOException;
@@ -52,6 +53,7 @@ public class Server {
             System.out.println("Turn: " + (++turn));
 
             ServerMessage serverMessage = new ServerMessage(
+                    game.getAttackDeltas(),
                     game.getWallDeltasList(),
                     game.getMoveDeltasList(),
                     game.getOtherDeltasList()
@@ -83,6 +85,10 @@ public class Server {
             game.endTurn();
             game.getMap().updateMap(game.getOtherDeltasList());
             graphics.startAnimation();
+            Logger.getInstance().logs(game.getAttackDeltas(), turn);
+            Logger.getInstance().logs(game.getMoveDeltasList(), turn);
+            Logger.getInstance().logs(game.getWallDeltasList(), turn);
+            Logger.getInstance().logs(game.getOtherDeltasList(), turn);
         }
     }
 

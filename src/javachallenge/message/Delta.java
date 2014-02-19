@@ -1,5 +1,6 @@
 package javachallenge.message;
 
+import com.google.gson.Gson;
 import javachallenge.util.*;
 
 import java.io.Serializable;
@@ -123,51 +124,5 @@ public class Delta
 
     public void setUnitID(int unitID) {
         this.unitID = unitID;
-    }
-
-    @Override
-    public String toString() {
-        String string = null;
-        switch (this.getType()) {
-            case SPAWN:
-                string = "Spawning a new unit with ID " + unitID + " for team " + teamID;
-            break;
-            case RESOURCE_CHANGE:
-                string = "Team " + teamID + " resource has change by " + changeValue;
-            break;
-            case MINE_CHANGE:
-                string = "Mine " + point + " resource has change by " + changeValue;
-            break;
-            case MINE_DISAPPEAR:
-                string = "Mine " + point + " disappeared";
-            break;
-            case AGENT_ARRIVE:
-                string = "Unit " + unitID + " from team " + teamID + " has arrived to destination";
-            break;
-            case AGENT_ATTACK:
-                string = "Unit " + unitID + " from team " + teamID + " attacked to " + direction + " Direction";
-            break;
-            case AGENT_KILL:
-                string = "Unit " + unitID + " from team " + teamID + " has killed";
-            break;
-            case CELL_MOVE:
-                string = "Unit " + unitID + " from team " + teamID + " moved to " + direction + " Direction";
-            break;
-            case WALL_DESTROY:
-                string = "WallDestroy";
-            break;
-            case WALL_MAKE:
-                string = "WallMake";
-            break;
-        }
-        return string;
-        /*return "Delta{" +
-                "type=" + type +
-                ", point=" + point +
-                ", direction=" + direction +
-                ", changeValue=" + changeValue +
-                ", teamID=" + teamID +
-                ", unitID=" + unitID +
-                '}';*/
     }
 }
