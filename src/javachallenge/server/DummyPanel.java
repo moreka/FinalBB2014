@@ -1,6 +1,7 @@
 package javachallenge.server;
 
 import javachallenge.exceptions.CellIsNullException;
+import javachallenge.message.Delta;
 import javachallenge.units.Unit;
 import javachallenge.util.Direction;
 import javachallenge.util.EdgeType;
@@ -13,11 +14,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DummyPanel extends JPanel {
     private final Map map;
-    private final Game game;
 
     private Image bufferImage;
     private Image background;
@@ -31,9 +32,8 @@ public class DummyPanel extends JPanel {
 
     private HashMap<Unit, Point> lastPosition = new HashMap<Unit, Point>();
 
-    public DummyPanel(Game game) {
-        this.game = game;
-        this.map = game.getMap();
+    public DummyPanel(Map map) {
+        this.map = map;
         this.setSize(WIDTH, HEIGHT);
         this.bufferImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         this.background = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);

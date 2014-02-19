@@ -18,7 +18,7 @@ public class DummyGraphics extends JFrame {
         this.setSize(new Dimension(850, 650));
         this.setLayout(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        dummyPanel = new DummyPanel(game);
+        dummyPanel = new DummyPanel(game.getMap());
         this.add(dummyPanel);
     }
 
