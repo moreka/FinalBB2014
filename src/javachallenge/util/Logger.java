@@ -30,7 +30,7 @@ public class Logger {
     }
 
     public void log(Action action, int turn) {
-        writer.append("[" + System.currentTimeMillis() + "][turn:" + turn + "] ");
+        writer.append(System.currentTimeMillis() + "@" + turn + "@");
         writer.append(gson.toJson(action) + '\n');
         writer.flush();
     }
