@@ -6,7 +6,6 @@ import javachallenge.util.Direction;
 public class Unit {
     private int id;
     private int teamId;
-    private Direction move;
     private boolean arrived = false;
     private Cell cell;
 
@@ -24,14 +23,6 @@ public class Unit {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Direction getMove() {
-        return move;
-    }
-
-    public void setMove(Direction move) {
-        this.move = move;
     }
 
     public boolean isArrived() {

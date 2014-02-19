@@ -1,6 +1,7 @@
 package javachallenge.server;
 
 import javachallenge.exceptions.CellIsNullException;
+import javachallenge.message.Delta;
 import javachallenge.units.Unit;
 import javachallenge.util.Direction;
 import javachallenge.util.EdgeType;
@@ -13,6 +14,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DummyPanel extends JPanel {

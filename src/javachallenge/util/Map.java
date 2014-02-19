@@ -323,6 +323,7 @@ public class Map implements Serializable, Cloneable {
         throw new CellIsNullException();
     }
 
+    @SuppressWarnings("unchecked")
     private ArrayList<Unit>[][] initUpdate() {
         ArrayList<Unit>[][] units = new ArrayList[sizeX][sizeY];
         for (int i = 0; i < sizeX; i++) {
