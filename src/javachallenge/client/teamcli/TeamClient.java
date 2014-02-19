@@ -14,5 +14,6 @@ public class TeamClient extends Client {
 
     @Override
     public void step() {
+        
     }
 }
