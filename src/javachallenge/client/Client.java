@@ -4,8 +4,9 @@ import javachallenge.exceptions.CellIsNullException;
 import javachallenge.message.*;
 import javachallenge.units.Unit;
 import javachallenge.util.*;
+import javachallenge.util.Map;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public abstract class Client {
     private ArrayList<Action> actionList;
@@ -63,14 +64,42 @@ public abstract class Client {
         return turn;
     }
 
-    private ArrayList<Action> filterMoves() {
-        return null;
-    }
-
     public ClientMessage end() {
-        for (int i = actionList.size() - 1; i >= 0; i++) {
-
-        }
+//        boolean[] mark = new boolean[actionList.size()];
+//
+//        for (int i = actionList.size() - 1; i >= 0; i++) {
+//            if (!mark[i]) {
+//                Action current = actionList.get(i);
+//                switch (current.getType()) {
+//                    case MOVE:
+//                    case ATTACK:
+//                    {
+//                        for (int j = i-1; j >= 0; j--) {
+//                            if (actionList.get(j).getType() == current.getType()
+//                                    && actionList.get(j).getPosition().equals(current.getPosition())) {
+//
+//                                mark[j] = true;
+//                            }
+//                        }
+//                        break;
+//                    }
+//                    case DESTROY_WALL:
+//                    case MAKE_WALL:
+//                    {
+//                        for (int j = i-1; j >= 0; j--) {
+//                            if ((actionList.get(j).getType() == ActionType.DESTROY_WALL ||
+//                                    actionList.get(j).getType() == ActionType.MAKE_WALL)
+//                                    && actionList.get(j).getPosition().equals(current.getPosition())
+//                                    && actionList.get(j).getDirection() == current.getDirection()) {
+//
+//                                mark[j] = true;
+//                            }
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//        }
         return new ClientMessage(actionList);
     }
 

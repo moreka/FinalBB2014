@@ -22,7 +22,7 @@ public class MovieServer {
         Map map = Map.loadMap("JC.map");
         Game game = new Game(map);
 
-        DummyGraphics graphics = new DummyGraphics(game);
+        DummyGraphics graphics = new DummyGraphics(map);
         graphics.setVisible(true);
 
         for (int i = 0; i < num_clients; i++) {
@@ -72,10 +72,10 @@ public class MovieServer {
             game.endTurn();
             game.getMap().updateMap(game.getOtherDeltasList());
             graphics.startAnimation();
-            Logger.getInstance().logs(game.getAttackDeltas(), turn);
-            Logger.getInstance().logs(game.getMoveDeltasList(), turn);
-            Logger.getInstance().logs(game.getWallDeltasList(), turn);
-            Logger.getInstance().logs(game.getOtherDeltasList(), turn);
+//            Logger.getInstance().logs(game.getAttackDeltas(), turn);
+//            Logger.getInstance().logs(game.getMoveDeltasList(), turn);
+//            Logger.getInstance().logs(game.getWallDeltasList(), turn);
+//            Logger.getInstance().logs(game.getOtherDeltasList(), turn);
         }
 
 //        for (ClientConnection c : clientConnections) {
