@@ -7,6 +7,7 @@ public class Unit {
     private int id;
     private int teamId;
     private boolean arrived = false;
+    private boolean alive = true;
     private Cell cell;
 
     public int getTeamId() {
@@ -39,5 +40,13 @@ public class Unit {
 
     public void setCell(Cell cell) {
         this.cell = cell;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 }

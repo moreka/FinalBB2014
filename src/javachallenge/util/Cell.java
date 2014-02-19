@@ -4,9 +4,6 @@ import javachallenge.units.Unit;
 
 import java.io.Serializable;
 
-/**
- * Created by peyman on 2/6/14.
- */
 public class Cell implements Serializable {
 
     private Point point;
