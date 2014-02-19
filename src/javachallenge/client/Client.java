@@ -8,11 +8,12 @@ import javachallenge.util.*;
 import java.util.ArrayList;
 
 public abstract class Client {
-    protected ArrayList<Action> actionList;
+    private ArrayList<Action> actionList;
     protected Map map;
-    protected ArrayList<Unit> myUnits = new ArrayList<Unit>();
-    protected int teamID;
-    protected int resources;
+    private ArrayList<Unit> myUnits = new ArrayList<Unit>();
+    private int resources;
+    private int teamID;
+    private int turn = 0;
 
     public Client() {
     }
@@ -24,8 +25,9 @@ public abstract class Client {
     public abstract void step();
 
     public void update(ServerMessage message) {
-        this.map.updateMap(message.getWallDeltaList());
+        this.map.updateMap(message.getAttackDeltaList());
         this.map.updateMap(message.getMoveDeltaList());
+        this.map.updateMap(message.getWallDeltaList());
         this.map.updateMap(message.getOtherDeltaList());
 
         for (Delta delta : message.getOtherDeltaList()) {
@@ -36,15 +38,35 @@ public abstract class Client {
                     e.printStackTrace();
                 }
             }
-            else if(delta.getType() == DeltaType.RESOURCE_CHANGE && delta.getTeamID() == this.getTeamID()){
+            else if (delta.getType() == DeltaType.RESOURCE_CHANGE && delta.getTeamID() == this.getTeamID()){
                 this.resources = this.resources + delta.getChangeValue();
             }
+            else if ((delta.getType() == DeltaType.AGENT_KILL || delta.getType() == DeltaType.AGENT_ARRIVE)
+                    && delta.getTeamID() == this.getTeamID()) {
+
+                for (int i = 0; i < myUnits.size(); i++)
+                    if (myUnits.get(i).getId() == delta.getUnitID()) {
+                        myUnits.remove(i);
+                        break;
+                    }
+            }
         }
+
+        turn++;
+    }
+
+    public ArrayList<Unit> getMyUnits() {
+        return myUnits;
+    }
+
+    public int getTurn() {
+        return turn;
     }
 
     public ClientMessage end() {
         return new ClientMessage(actionList);
     }
+
     public void move(Unit unit, Direction direction) {
         if (!unit.isArrived())
             actionList.add(new Action(
@@ -72,12 +94,12 @@ public abstract class Client {
                 getTeamID()));
     }
 
-    public void attack(Cell cell, Direction direction){
-        if (cell == null)
+    public void attack(Unit unit, Direction direction) {
+        if (unit == null)
             return;
         actionList.add(new Action(
                 ActionType.ATTACK,
-                cell.getPoint(),
+                unit.getCell().getPoint(),
                 direction,
                 getTeamID()));
     }
@@ -96,10 +118,6 @@ public abstract class Client {
 
     public void setResources(int resources) {
         this.resources = resources;
-    }
-
-    public void setMap(Map map) {
-        this.map = map;
     }
 
     public Map getMap() {

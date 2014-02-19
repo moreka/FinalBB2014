@@ -45,7 +45,7 @@ public class Connector {
                 try {
                     while (!isGameEnded) {
                         ServerMessage tmp = (ServerMessage) in.readObject();
-                        System.out.println("data recieved from server");
+//                        System.out.println("data recieved from server");
                         synchronized (lock) {
                             serverMessage = tmp;
                         }
@@ -76,7 +76,7 @@ public class Connector {
                             client.update(otherThreadMessage);
                             client.step();
                             ClientMessage message = client.end();
-                            System.out.println("Writing object to server ...");
+//                            System.out.println("Writing object to server ...");
                             out.writeObject(message);
                         }
                         else {
