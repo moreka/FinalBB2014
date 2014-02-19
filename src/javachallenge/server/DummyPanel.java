@@ -62,6 +62,7 @@ public class DummyPanel extends JPanel {
             }
 
             loadBackground();
+            drawBackground();
 
         } catch (IOException e) {
             e.printStackTrace();
