@@ -1,25 +1,33 @@
 package javachallenge.server;
 
-import javachallenge.util.Map;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-/**
- * Created by mohammad on 2/11/14.
- */
 public class DummyGraphics extends JFrame {
 
     private DummyPanel dummyPanel;
 
     public DummyGraphics(Game game) throws HeadlessException, IOException {
         super("Java Challenge Tester");
-        this.setSize(new Dimension(850, 650));
-        this.setLayout(null);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         dummyPanel = new DummyPanel(game.getMap());
-        this.add(dummyPanel);
+        dummyPanel.setPreferredSize(new Dimension(dummyPanel.WIDTH, dummyPanel.HEIGHT));
+
+        JScrollPane scrollPane = new JScrollPane(dummyPanel);
+
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setBounds(20, 20, 800, 600);
+
+        JPanel contentPane = new JPanel(null);
+        contentPane.setPreferredSize(new Dimension(1000, 700));
+        contentPane.add(scrollPane);
+
+        this.setContentPane(contentPane);
+        pack();
     }
 
     public void startAnimation() {

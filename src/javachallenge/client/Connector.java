@@ -52,7 +52,8 @@ public class Connector {
                         isGameEnded = serverMessage.isGameEnded();
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.err.println("Cannot establish connection to server");
+                    isGameEnded = true;
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -83,7 +84,7 @@ public class Connector {
                         }
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.err.println("Cannot establish connection to server");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

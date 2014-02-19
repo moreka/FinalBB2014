@@ -23,6 +23,11 @@ public class ServerMessage
         this.otherDeltaList = new ArrayList<Delta>();
     }
 
+    public ServerMessage(boolean isGameEnded) {
+        this();
+        this.setGameEnded(isGameEnded);
+    }
+
     public ServerMessage(ArrayList<Delta> attackDeltaList, ArrayList<Delta> wallDeltaList, ArrayList<Delta> moveDeltaList, ArrayList<Delta> otherDeltaList) {
 
         this.attackDeltaList = attackDeltaList;

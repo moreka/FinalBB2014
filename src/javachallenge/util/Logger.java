@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-/**
- * Created by mohammad on 2/6/14.
- */
 public class Logger {
     private static Logger instance = null;
     private PrintWriter writer;
@@ -18,7 +15,7 @@ public class Logger {
 
     private Logger() {
         try {
-            writer = new PrintWriter(new FileWriter("LOG"));
+            writer = new PrintWriter(new FileWriter("JavaChallenge.log"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -31,7 +28,7 @@ public class Logger {
     }
 
     public void log(Delta delta, int turn) {
-        writer.append("{" + String.valueOf(System.currentTimeMillis()) + "} turn " + turn + ": ");
+        writer.append("[" + String.valueOf(System.currentTimeMillis()) + "][turn:" + turn + "] ");
         writer.append(gson.toJson(delta) + '\n');
         writer.flush();
     }

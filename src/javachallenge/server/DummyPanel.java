@@ -2,9 +2,7 @@ package javachallenge.server;
 
 import javachallenge.exceptions.CellIsNullException;
 import javachallenge.units.Unit;
-import javachallenge.util.Direction;
-import javachallenge.util.EdgeType;
-import javachallenge.util.Map;
+import javachallenge.util.*;
 import javachallenge.util.Point;
 
 import javax.imageio.ImageIO;
@@ -20,11 +18,12 @@ public class DummyPanel extends JPanel {
 
     private Image bufferImage;
     private Image background;
-    private Image sand, ocean, zombie, ce;
-    private Image[] walls;
-    private final int WIDTH = 950;
-    private final int HEIGHT = 650;
-    private final int SIZE = 49;
+    private Image[] cellsImg;
+    private Image[] unitsImg;
+    private Image[] wallsImg;
+    public int WIDTH = 950;
+    public int HEIGHT = 650;
+    private final int SIZE = 53;
 
     private final int NUM_STEPS = 10;
     private final int ANIM_LEN = 100;
@@ -33,18 +32,32 @@ public class DummyPanel extends JPanel {
 
     public DummyPanel(Map map) {
         this.map = map;
+
+        WIDTH = SIZE * map.getSizeX() + SIZE / 2;
+        HEIGHT = SIZE * map.getSizeY() * 3 / 4;
+
         this.setSize(WIDTH, HEIGHT);
         this.bufferImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         this.background = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        cellsImg = new Image[10];
+        unitsImg = new Image[2];
         try {
-            this.sand = ImageIO.read(new File("dummy/green.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
-            this.ocean = ImageIO.read(new File("dummy/ocean.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
-            this.zombie = ImageIO.read(new File("dummy/zombie.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
-            this.ce = ImageIO.read(new File("dummy/ce.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            cellsImg[0] = ImageIO.read(new File("dummy/green.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            cellsImg[1] = ImageIO.read(new File("dummy/ocean.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            cellsImg[2] = ImageIO.read(new File("dummy/mountain.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            cellsImg[3] = ImageIO.read(new File("dummy/mine.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            cellsImg[4] = ImageIO.read(new File("dummy/out-of-map.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            cellsImg[5] = ImageIO.read(new File("dummy/spawn-red.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            cellsImg[6] = ImageIO.read(new File("dummy/spawn-blue.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            cellsImg[7] = ImageIO.read(new File("dummy/dest1.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            cellsImg[8] = ImageIO.read(new File("dummy/dest2.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
 
-            walls = new Image[6];
+            unitsImg[0] = ImageIO.read(new File("dummy/unit1.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            unitsImg[1] = ImageIO.read(new File("dummy/unit2.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+
+            wallsImg = new Image[6];
             for (Direction dir : Direction.values()) {
-                this.walls[dir.ordinal()] = ImageIO.read(new File(
+                this.wallsImg[dir.ordinal()] = ImageIO.read(new File(
                         "dummy/brush-" + (dir.ordinal() + 1) + ".png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
             }
 
@@ -110,7 +123,7 @@ public class DummyPanel extends JPanel {
 
     private void loadBackground() {
         Graphics2D g = (Graphics2D) background.getGraphics();
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH, HEIGHT);
         for (int i = 0; i < map.getSizeX(); i++) {
             for (int j = 0; j < map.getSizeY(); j++) {
@@ -120,15 +133,23 @@ public class DummyPanel extends JPanel {
                 else
                     x = i * SIZE + (SIZE / 2);
                 try {
+                    g.drawImage(cellsImg[0], x, y, null);
                     switch (map.getCellAt(i, j).getType()) {
-                        case TERRAIN:
-                            g.drawImage(sand, x, y, null);
+                        case DESTINATION:
+                            if (map.getDestinationPoint(0).equals(new Point(i, j)))
+                                g.drawImage(cellsImg[7], x, y, null);
+                            else
+                                g.drawImage(cellsImg[8], x, y, null);
                             break;
-                        case RIVER:
-                            g.drawImage(ocean, x, y, null);
+                        case SPAWN:
+                            if (map.getSpawnPoint(0).equals(new Point(i, j)))
+                                g.drawImage(cellsImg[5], x, y, null);
+                            else
+                                g.drawImage(cellsImg[6], x, y, null);
                             break;
-                        case OUTOFMAP:
-                            g.drawImage(ocean, x, y, null);
+                        default:
+                            g.drawImage(cellsImg[map.getCellAt(i, j).getType().ordinal()], x, y, null);
+                            break;
                     }
                 } catch (CellIsNullException e) {
                     e.printStackTrace();
@@ -163,7 +184,7 @@ public class DummyPanel extends JPanel {
                         if (map.getCellAt(i, j).getEdge(dir) != null &&
                                 map.getCellAt(i, j).getEdge(dir).getType() == EdgeType.WALL) {
 
-                            g.drawImage(walls[dir.ordinal()], x, y, null);
+                            g.drawImage(wallsImg[dir.ordinal()], x, y, null);
                             //g.drawLine(x + xEdge[dir.ordinal()], y + yEdge[dir.ordinal()],
                             //        x + xEdge[(dir.ordinal() + 1) % 6], y + yEdge[(dir.ordinal() + 1) % 6]);
                         }
@@ -207,7 +228,7 @@ public class DummyPanel extends JPanel {
                         else {
                             place = getGraphicalPoint(unit.getCell().getPoint());
                         }
-                        g.drawImage((unit.getTeamId() == 0 ? ce : zombie), place.getX(), place.getY(), null);
+                        g.drawImage(unitsImg[unit.getTeamId()], place.getX(), place.getY(), null);
                     }
                 } catch (CellIsNullException e) {
                     e.printStackTrace();

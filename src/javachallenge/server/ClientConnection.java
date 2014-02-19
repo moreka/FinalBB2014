@@ -7,9 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-/**
- * Created by mohammad on 2/6/14.
- */
 public class ClientConnection {
     private ObjectOutputStream out;
     private ObjectInputStream in;
@@ -19,23 +16,26 @@ public class ClientConnection {
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
 
-        new Thread() {
+        Thread clientThread = new Thread() {
+            @Override
             public void run() {
-                while (true) {
-                    try {
+                try {
+                    while (true) {
                         ClientMessage tmp = (ClientMessage) in.readObject();
                         System.out.println("client message recieved");
                         synchronized (ClientConnection.this) {
                             ClientConnection.this.clientMessage = tmp;
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
                     }
+                } catch (IOException e) {
+                    System.err.println("Client no longer connected to game");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
-        }.start();
+        };
+        clientThread.setDaemon(true);
+        clientThread.start();
     }
 
     public synchronized ClientMessage getClientMessage() {

@@ -49,7 +49,7 @@ public class Server {
 
         int turn = 0;
 
-        while (!game.isEnded() && turn < 700) {
+        while (!game.isEnded()) {
             System.out.println("Turn: " + (++turn));
 
             ServerMessage serverMessage = new ServerMessage(
@@ -90,6 +90,15 @@ public class Server {
             Logger.getInstance().logs(game.getWallDeltasList(), turn);
             Logger.getInstance().logs(game.getOtherDeltasList(), turn);
         }
+
+        for (ClientConnection c : clientConnections) {
+            c.getOut().writeObject(
+                    new ServerMessage(true)
+            );
+            c.getOut().flush();
+        }
+
+        Logger.getInstance().close();
     }
 
     public static void main(String[] args) {
