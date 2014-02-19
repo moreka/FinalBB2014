@@ -1,7 +1,6 @@
 package javachallenge.server;
 
 import javachallenge.exceptions.CellIsNullException;
-import javachallenge.message.Delta;
 import javachallenge.units.Unit;
 import javachallenge.util.Direction;
 import javachallenge.util.EdgeType;
@@ -14,7 +13,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DummyPanel extends JPanel {
@@ -23,9 +21,10 @@ public class DummyPanel extends JPanel {
     private Image bufferImage;
     private Image background;
     private Image sand, ocean, zombie, ce;
+    private Image[] walls;
     private final int WIDTH = 950;
     private final int HEIGHT = 650;
-    private final int SIZE = 48;
+    private final int SIZE = 49;
 
     private final int NUM_STEPS = 10;
     private final int ANIM_LEN = 100;
@@ -38,10 +37,16 @@ public class DummyPanel extends JPanel {
         this.bufferImage = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         this.background = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         try {
-            this.sand = ImageIO.read(new File("dummy/desert.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            this.sand = ImageIO.read(new File("dummy/green.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
             this.ocean = ImageIO.read(new File("dummy/ocean.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
             this.zombie = ImageIO.read(new File("dummy/zombie.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
             this.ce = ImageIO.read(new File("dummy/ce.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+
+            walls = new Image[6];
+            for (Direction dir : Direction.values()) {
+                this.walls[dir.ordinal()] = ImageIO.read(new File(
+                        "dummy/brush-" + (dir.ordinal() + 1) + ".png")).getScaledInstance(SIZE, SIZE, Image.SCALE_SMOOTH);
+            }
 
             loadBackground();
 
@@ -83,7 +88,7 @@ public class DummyPanel extends JPanel {
                 int step = 1;
                 while (step <= NUM_STEPS) {
                     drawBackground();
-                    drawEdges();
+                    drawWalls();
                     drawUnits(step);
                     repaint();
                     step++;
@@ -109,7 +114,7 @@ public class DummyPanel extends JPanel {
         g.fillRect(0, 0, WIDTH, HEIGHT);
         for (int i = 0; i < map.getSizeX(); i++) {
             for (int j = 0; j < map.getSizeY(); j++) {
-                int x, y = j * SIZE * 3 / 4;
+                int x, y = j * (SIZE - 1) * 3 / 4;
                 if (j % 2 == 0)
                     x = i * SIZE;
                 else
@@ -137,7 +142,7 @@ public class DummyPanel extends JPanel {
         g.drawImage(background, 0, 0, null);
     }
 
-    private void drawEdges() {
+    private void drawWalls() {
         Graphics2D g = (Graphics2D) bufferImage.getGraphics();
 
         int[] xEdge = { SIZE / 2, SIZE, SIZE, SIZE / 2, 0, 0 };
@@ -148,7 +153,7 @@ public class DummyPanel extends JPanel {
 
         for (int i = 0; i < map.getSizeX(); i++) {
             for (int j = 0; j < map.getSizeY(); j++) {
-                int x, y = j * SIZE * 3 / 4;
+                int x, y = j * (SIZE - 1) * 3 / 4;
                 if (j % 2 == 0)
                     x = i * SIZE;
                 else
@@ -157,8 +162,10 @@ public class DummyPanel extends JPanel {
                     try {
                         if (map.getCellAt(i, j).getEdge(dir) != null &&
                                 map.getCellAt(i, j).getEdge(dir).getType() == EdgeType.WALL) {
-                            g.drawLine(x + xEdge[dir.ordinal()], y + yEdge[dir.ordinal()],
-                                    x + xEdge[(dir.ordinal() + 1) % 6], y + yEdge[(dir.ordinal() + 1) % 6]);
+
+                            g.drawImage(walls[dir.ordinal()], x, y, null);
+                            //g.drawLine(x + xEdge[dir.ordinal()], y + yEdge[dir.ordinal()],
+                            //        x + xEdge[(dir.ordinal() + 1) % 6], y + yEdge[(dir.ordinal() + 1) % 6]);
                         }
                     } catch (CellIsNullException e) {
                         e.printStackTrace();
@@ -176,7 +183,7 @@ public class DummyPanel extends JPanel {
     }
 
     private Point getGraphicalPoint(Point point) {
-        int x, y = point.getY() * SIZE * 3 / 4;
+        int x, y = point.getY() * (SIZE - 1) * 3 / 4;
         if (point.getY() % 2 == 0)
             x = point.getX() * SIZE;
         else
