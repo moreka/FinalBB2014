@@ -107,7 +107,7 @@ public class Game {
                 Cell neighborCell = map.getNeighborCell(cell, attack.getDirection());
                 if (neighborCell.isGround()) {
                     attackDeltas.add(new Delta(DeltaType.AGENT_ATTACK, cell.getPoint(), attack.getDirection()));
-                    if(neighborCell.getUnit() != null)
+                    if(neighborCell.getUnit() != null && neighborCell.getUnit().getTeamId() != cell.getUnit().getTeamId())
                         attackDeltas.add(new Delta(DeltaType.AGENT_KILL, neighborCell.getPoint()));
                 }
             } catch (CellIsNullException e) {
