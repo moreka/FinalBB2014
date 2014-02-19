@@ -17,8 +17,6 @@ public class Map implements Serializable, Cloneable {
     private ArrayList<MineCell> mines;
     private int sizeX;
     private int sizeY;
-    //private Edge[] walls;
-    private int MINE_RATE;
     private int MINE_AMOUNT;
 
     private Point[] spawnPoints = new Point[2];
@@ -460,14 +458,6 @@ public class Map implements Serializable, Cloneable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public int getMINE_RATE() {
-        return MINE_RATE;
-    }
-
-    public void setMINE_RATE(int MINE_RATE) {
-        this.MINE_RATE = MINE_RATE;
     }
 
     public String getString() {

@@ -31,7 +31,6 @@ public class MapMaker {
     public static MapHelper mapHelper;
 
 
-
     public static void main(String[] args) {
         colors = new Color[7];
         colors[0] = Color.green;
