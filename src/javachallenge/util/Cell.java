@@ -1,6 +1,5 @@
 package javachallenge.util;
 
-import javachallenge.exceptions.UnitIsNullException;
 import javachallenge.units.Unit;
 
 import java.io.Serializable;

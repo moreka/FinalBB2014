@@ -1,7 +1,6 @@
 package javachallenge.client;
 
 import javachallenge.exceptions.CellIsNullException;
-import javachallenge.exceptions.UnitIsNullException;
 import javachallenge.message.*;
 import javachallenge.units.Unit;
 import javachallenge.util.*;
