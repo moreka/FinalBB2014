@@ -8,9 +8,6 @@ import javachallenge.units.Unit;
 import java.io.*;
 import java.util.ArrayList;
 
-/**
- * Created by mohammad on 2/5/14.
- */
 public class Map implements Serializable, Cloneable {
     private Cell[][] cells;
 

@@ -1,6 +1,7 @@
 package javachallenge.util;
 
 import com.google.gson.Gson;
+import javachallenge.message.Action;
 import javachallenge.message.Delta;
 
 import java.io.FileWriter;
@@ -27,15 +28,15 @@ public class Logger {
         return instance;
     }
 
-    public void log(Delta delta, int turn) {
-        writer.append("[" + String.valueOf(System.currentTimeMillis()) + "][turn:" + turn + "] ");
-        writer.append(gson.toJson(delta) + '\n');
+    public void log(Action action, int turn) {
+        writer.append("[" + System.currentTimeMillis() + "][turn:" + turn + "] ");
+        writer.append(gson.toJson(action) + '\n');
         writer.flush();
     }
 
-    public void logs(ArrayList<Delta> deltas, int turn) {
-        for (Delta delta : deltas)
-            log(delta, turn);
+    public void logs(ArrayList<Action> actions, int turn) {
+        for (Action action : actions)
+            log(action, turn);
     }
 
     public void close() {

@@ -1,5 +1,7 @@
 package javachallenge.server;
 
+import javachallenge.util.Map;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -8,12 +10,12 @@ public class DummyGraphics extends JFrame {
 
     private DummyPanel dummyPanel;
 
-    public DummyGraphics(Game game) throws HeadlessException, IOException {
+    public DummyGraphics(Map map) throws HeadlessException, IOException {
         super("Java Challenge Tester");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        dummyPanel = new DummyPanel(game.getMap());
+        dummyPanel = new DummyPanel(map);
         dummyPanel.setPreferredSize(new Dimension(dummyPanel.WIDTH, dummyPanel.HEIGHT));
 
         JScrollPane scrollPane = new JScrollPane(dummyPanel);

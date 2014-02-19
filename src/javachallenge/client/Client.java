@@ -63,7 +63,14 @@ public abstract class Client {
         return turn;
     }
 
+    private ArrayList<Action> filterMoves() {
+        return null;
+    }
+
     public ClientMessage end() {
+        for (int i = actionList.size() - 1; i >= 0; i++) {
+
+        }
         return new ClientMessage(actionList);
     }
 
