@@ -24,7 +24,7 @@ public class Server {
 
         ServerSocket serverSocket = new ServerSocket(PORT);
 
-        Map map = Map.loadMap("Easy.map");
+        Map map = Map.loadMap("JC.map");
         Game game = new Game(map);
 
         DummyGraphics graphics = new DummyGraphics(game);

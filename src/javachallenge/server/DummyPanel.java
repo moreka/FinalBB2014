@@ -23,7 +23,7 @@ public class DummyPanel extends JPanel {
     private Image[] wallsImg;
     public int WIDTH = 950;
     public int HEIGHT = 650;
-    private final int SIZE = 53;
+    private final int SIZE = 40;
 
     private final int NUM_STEPS = 10;
     private final int ANIM_LEN = 100;
