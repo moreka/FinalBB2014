@@ -14,7 +14,6 @@ public class Map implements Serializable, Cloneable {
     private int sizeX;
     private int sizeY;
     private int MINE_AMOUNT;
-
     private Point[] spawnPoints = new Point[2];
     private Point[] destinationPoints = new Point[2];
 
