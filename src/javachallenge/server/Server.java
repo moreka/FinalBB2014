@@ -95,6 +95,7 @@ public class Server {
             graphics.setTeam2ScoreLabel(game.getTeam(1).getScore());
             graphics.setTeam1ResourceLabel(game.getTeam(0).getResource());
             graphics.setTeam2ResourceLabel(game.getTeam(1).getResource());
+            graphics.updateScorePanel();
         }
 
         for (ClientConnection c : clientConnections) {
