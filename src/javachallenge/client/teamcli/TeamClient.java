@@ -1,264 +1,273 @@
 package javachallenge.client.teamcli;
 
-import java.util.LinkedList;
-
 import javachallenge.client.Client;
 import javachallenge.exceptions.CellIsNullException;
 import javachallenge.units.Unit;
-import javachallenge.util.Cell;
-import javachallenge.util.Direction;
-import javachallenge.util.Edge;
-import javachallenge.util.EdgeType;
-import javachallenge.util.Point;
+import javachallenge.util.*;
 
-/**
- * Created by mohammad on 2/5/14.
- */
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+
 public class TeamClient extends Client {
-	// HashSet<Cell> destinations;
-	// int crushedUnitNum = -1;
-	int workerUnitNum = -1;
 
-	// int layerBreakerX, layerBreakerY;
-	// Direction unitDir = Direction.SOUTHWEST;
-	// boolean endLayering = false;
-	// int steps = 0;
-	// int stepsNeeded = 0;
+    private final int INF = 1000 * 1000 * 1000 + 10;
 
-	@Override
-	public void step() {
-		// attack part
-		for (int i = 0; i < getMyUnits().size(); i++) {
-			Unit myUnit = getMyUnits().get(i);
-			if (myUnit.isAlive()) {
-				for (int j = 0; j < 6; j++) {
-					Direction dir = Direction.values()[j];
-					try {
-						Unit tmp = map.getNeighborCell(myUnit.getCell(), dir)
-								.getUnit();
-						if (tmp != null && tmp.getTeamId() == 1 - getTeamID()) {
-							attack(myUnit, dir);
-							break;
-						}
-					} catch (CellIsNullException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+    // ****************************** public variable ******************************
 
-		for (int i = 0; i < getMyUnits().size(); i++) {
-			Unit myUnit = getMyUnits().get(i);
-			if (myUnit.isAlive()) {
-				if (myUnit.isArrived() || workerUnitNum == i)
-					continue;
-				Direction dir = null;
-				try {
-					dir = pathfinder(myUnit, map.getSpawnCell(1 - getTeamID()));
-					if (dir != null) {
-						Unit tmp = map.getNeighborCell(myUnit.getCell(), dir)
-								.getUnit();
-						if (tmp != null && tmp.getTeamId() == 1 - getTeamID())
-							attack(myUnit, dir);
-					}
-				} catch (CellIsNullException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (dir != null) {
-					move(myUnit, dir);
-				} else if (workerUnitNum == -1)
-					workerUnitNum = i;
-			}
-		}
+    boolean is_started = false;
 
-	}
+    // ****************************** start variables ******************************
 
-	public Direction rotate(Direction dir) {
-		Direction newDir;
-		if (dir == Direction.EAST)
-			newDir = Direction.SOUTHEAST;
-		else if (dir == Direction.SOUTHEAST)
-			newDir = Direction.SOUTHWEST;
-		else if (dir == Direction.SOUTHWEST)
-			newDir = Direction.WEST;
-		else if (dir == Direction.WEST)
-			newDir = Direction.NORTHWEST;
-		else if (dir == Direction.NORTHWEST)
-			newDir = Direction.NORTHEAST;
-		else
-			newDir = Direction.EAST;
-		return newDir;
-	}
+    private int my_team_id = -1, en_team_id = -1;
+    Cell my_spa, my_des, en_spa, en_des;
+    ArrayList<MineCell> mine_list = new ArrayList<MineCell>();
 
-	private boolean isEnemySpawnCellNear(Cell cell) {
-		int x = cell.getX();
-		int y = cell.getY();
-		for (int i = 0; i < 6; i++) {
-			Cell neighborCell = null;
-			try {
-				neighborCell = map.getNeighborCell(map.getCellAt(x, y),
-						Direction.values()[i]);
-			} catch (CellIsNullException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				if (neighborCell.equals(map.getSpawnCell(1 - getTeamID())))
-					return true;
-			} catch (CellIsNullException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
+    // ****************************** start variables ******************************
 
-	private boolean isEnemyNear(Unit myUnit) {
-		int x = myUnit.getCell().getX();
-		int y = myUnit.getCell().getY();
-		for (int i = 0; i < 6; i++) {
-			Unit unit = null;
-			try {
-				unit = map.getNeighborCell(map.getCellAt(x, y),
-						Direction.values()[i]).getUnit();
-			} catch (CellIsNullException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (unit != null && unit.getTeamId() == 1 - getTeamID())
-				return true;
-		}
-		return false;
-	}
+    private boolean is_free(Point p){
+        try{
+            int x = p.getX(), y = p.getY();
+            if (getMap().isCellInMap(x, y))
+                if (getMap().getCellAt(x, y).isGround())
+                    return true;
+        }catch (Exception e){ }
+        return false;
+    }
 
-	private boolean isEnemyNear(Cell cell) {
-		int x = cell.getX();
-		int y = cell.getY();
-		for (int i = 0; i < 6; i++) {
-			Unit unit = null;
-			try {
-				unit = map.getNeighborCell(map.getCellAt(x, y),
-						Direction.values()[i]).getUnit();
-			} catch (CellIsNullException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (unit != null && unit.getTeamId() == 1 - getTeamID())
-				return true;
-		}
-		return false;
-	}
+    private boolean is_full_free(Point p){
+        try{
+            int x = p.getX(), y = p.getY();
+            if (getMap().isCellInMap(x, y))
+                if (getMap().getCellAt(x, y).isGround())
+                    if (getMap().getCellAt(x, y).getUnit() == null)
+                        return true;
+        }catch (Exception e){
+        }
+        return false;
+    }
 
-	private Direction pathfinder(Unit myUnit, Cell dis) {
+    private boolean is_unit(Point p, int team_id){
+        try{
+            int x = p.getX(), y = p.getY();
+            if (getMap().isCellInMap(x, y))
+                if (getMap().getCellAt(x, y).getUnit() != null && getMap().getCellAt(x, y).getUnit().getTeamId() == team_id)
+                    return true;
+        }catch (Exception e){
+        }
+        return false;
+    }
 
-		String dir = null;
-		try {
-			dir = findPathPrivate(isAvailableMap(), myUnit.getCell().getX(),
-					myUnit.getCell().getY(), dis.getX(), dis.getY());
-		} catch (CellIsNullException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Direction direction = null;
-		if (dir.equals("l"))
-			direction = Direction.WEST;
-		else if (dir.equals("r"))
-			direction = Direction.EAST;
-		else if (dir.equals("ur"))
-			direction = Direction.NORTHEAST;
-		else if (dir.equals("dr"))
-			direction = Direction.SOUTHEAST;
-		else if (dir.equals("dl"))
-			direction = Direction.SOUTHWEST;
-		else if (dir.equals("ul"))
-			direction = Direction.NORTHWEST;
-		return direction;
-	}
+    private boolean is_unit(Point p, Direction d, int team_id){
+        try {
+            return is_unit(getMap().getNeighborCell(getMap().getCellAt(p.getX(), p.getY()), d).getPoint(), team_id);
+        } catch (Exception e) {
+        }
+        return false;
+    }
 
-	private boolean[][] isAvailableMap() throws CellIsNullException {
-		boolean[][] isAvailableMap = new boolean[map.getSizeX()][map.getSizeY()];
-		for (int x = 0; x < map.getSizeX(); x += 1) {
-			for (int y = 0; y < map.getSizeY(); y += 1) {
-				if (map.isCellInMap(x, y))
-					isAvailableMap[x][y] = map.getCellAt(x, y).isGround();
-			}
-		}
-		return isAvailableMap;
-	}
+    private boolean is_open(Point p, Direction d){
+        try {
+            if (getMap().getCellAt(p.getX(), p.getY()).getEdge(d) == null)
+                return false;
+            if (getMap().getCellAt(p.getX(), p.getY()).getEdge(d).getType() == EdgeType.WALL.OPEN)
+                return true;
+        } catch (Exception e) { }
+        return false;
+    }
 
-	private String findPathPrivate(boolean[][] isAvailableMap, int sRow,
-			int sCol, int dRow, int dCol) throws CellIsNullException {
+    private boolean is_movable(Point p, Direction d) {
+        if (is_open(p, d) && is_full_free(move(p, d)))
+            return true;
+        return false;
+    }
 
-		class MyPoint {
-			public int row;
-			public int col;
+    // ******************************* base functions ******************************
 
-			public MyPoint(int row, int col) {
-				this.row = row;
-				this.col = col;
-			}
-		}
+    private Direction random_direction(){
+        return Direction.values()[new Random().nextInt(6)];
+    }
 
-		int rowCount = isAvailableMap.length;
-		int colCount = isAvailableMap[0].length;
+    private Direction random_attack_direction(Cell my){
+        try{
+            ArrayList<Direction> list = new ArrayList<Direction>();
+            for (Direction d : Direction.values())
+                if (is_open(my.getPoint(), d) && is_unit(my.getPoint(), d, en_team_id))
+                    list.add(d);
 
-		String[][] directions = new String[rowCount][colCount];
-		MyPoint[][] parents = new MyPoint[rowCount][colCount];
-		boolean[][] visited = new boolean[rowCount][colCount];
-		boolean found = false;
+            if (list.size() != 0)
+                return list.get(new Random().nextInt(list.size()));
+        }catch (Exception e) {
+        }
+        return null;
+    }
 
-		LinkedList<MyPoint> queue = new LinkedList<MyPoint>();
-		queue.add(new MyPoint(sRow, sCol));
+    private Direction random_direction(Cell c){
+        Direction d = null;
+        int counter = 0;
+        try{
+            do{
+                counter++;
+                d = random_direction();
+            }while (counter < 20 && !is_movable(c.getPoint(), d));
+        }catch (Exception e) { }
+        return d;
+    }
 
-		while (!found && queue.size() > 0) {
-			MyPoint point = queue.poll();
-			if (point.row == dRow && point.col == dCol)
-				found = true;
+    private void random_attack(Unit unit){
+        Direction d = random_attack_direction(unit.getCell());
+        if (d != null)
+            attack(unit, d);
+    }
 
-			String[] dirList = { "ur", "r", "dr", "dl", "l", "ul" };
-			int[] deltaCol = { -1, 0, 1, 1, 0, -1 };
-			int[] deltaRow = { point.col % 2, 1, point.col % 2,
-					point.col % 2 - 1, -1, point.col % 2 - 1 };
+    private Point move(Point p, Direction d){
+        try {
+            Cell c = getMap().getCellAt(p.getX(), p.getY());
+            return getMap().getNeighborCell(c, d).getPoint();
+        } catch (Exception e) {
+        }
+        return null;
+    }
 
-			for (int i = 0; i < 6; i++) {
-				int cRow = point.row + deltaRow[i];
-				int cCol = point.col + deltaCol[i];
-				if (cRow < 0 || cRow >= rowCount || cCol < 0
-						|| cCol >= colCount)
-					continue;
-				boolean isWall = true;
-				Edge edge = map.getCellAt(point.row, point.col).getEdge(
-						map.getDirectionFromTwoPoints(new Point(point.row,
-								point.col), new Point(cRow, cCol)));
-				isWall = edge.getType().equals(EdgeType.WALL);
-				if (visited[cRow][cCol] || !isAvailableMap[cRow][cCol]
-						|| isWall)
-					continue;
-				queue.add(new MyPoint(cRow, cCol));
-				directions[cRow][cCol] = dirList[i];
-				parents[cRow][cCol] = point;
-				visited[cRow][cCol] = true;
-				if (cRow == dRow && cCol == dCol)
-					found = true;
-			}
-		}
+    // ******************************* move functions ******************************
 
-		if (!found)
-			return "none";
+    private Direction go_to_bfs(Point str, Point des){
+        try {
+            Set<Point> mark = new HashSet<Point>();
+            ArrayDeque<Point> Q = new ArrayDeque<Point>();
+            HashMap<Point, Direction> par = new HashMap<Point, Direction>();
 
-		MyPoint point = new MyPoint(dRow, dCol);
-		MyPoint parent = parents[dRow][dCol];
-		while (parent != null && !(parent.row == sRow && parent.col == sCol)) {
-			point = parent;
-			parent = parents[point.row][point.col];
-		}
+            Q.push(str);
+            mark.add(str);
 
-		String dir = directions[point.row][point.col];
-		if (dir == null)
-			return "none";
-		else
-			return dir;
-	}
+            while (Q.size() != 0){
+                Point my = Q.getFirst();
+                Q.pop();
+                if (my.equals(des))
+                    break;
+                for (Direction d : Direction.values()){
+                    Point next = move(my, d);
+                    if (is_open(my, d) && is_free(next) && !mark.contains(next)){
+                        Q.add(next);
+                        mark.add(next);
+                        par.put(next, !par.containsKey(my) ? d : par.get(my));
+
+                        if (next.equals(des))
+                            return par.get(des);
+                    }
+                }
+            }
+
+            if (par.containsKey(des))
+                return par.get(des);
+        } catch (Exception e) {
+        }
+
+        return null;
+    }
+
+    // ******************************* init functions ******************************
+
+    private void Init_Static_Data(){
+        try{
+            my_team_id = getTeamID();
+            en_team_id = 1 - getTeamID();
+
+            my_spa = getMap().getSpawnCell(my_team_id);
+            my_des = getMap().getDestinationCell(my_team_id);
+
+            en_spa = getMap().getSpawnCell(en_team_id);
+            en_des = getMap().getDestinationCell(en_team_id);
+        }catch (Exception e){
+        }
+    }
+
+    private void Init_Data(){
+        try{
+            mine_list = getMap().getMines();
+        }catch (Exception e){
+        }
+    }
+
+    private void Init(){
+        Init_Data();
+
+        if (is_started)
+            return;
+        is_started = true;
+
+        Init_Static_Data();
+    }
+
+    // ******************************* main functions ******************************
+
+    private void random(Unit unit){
+        move(unit, random_direction(unit.getCell()));
+        random_attack(unit);
+    }
+
+    private boolean is_force(){
+        try {
+            if (getMap().getCellAt(my_spa.getX(), my_spa.getY()).getUnit() != null)
+                if (getMap().getCellAt(my_spa.getX(), my_spa.getY()).getUnit().getTeamId() == en_team_id)
+                    return true;
+        } catch (Exception e) { }
+        return false;
+    }
+
+    private void move(Unit unit){
+        Point des = my_des.getPoint();
+        if (is_force())
+            des = my_spa.getPoint();
+
+        System.err.println("MOVE");
+        Direction d = go_to_bfs(unit.getCell().getPoint(), my_des.getPoint());
+        System.err.println("MOVE " + d + " " + unit.getId());
+        if (d != null){
+			/*if (is_unit(unit.getCell().getPoint(), d, en_team_id))
+				attack(unit, d);
+			else
+				random_attack(unit);*/
+            move(unit, d);
+        }else{
+            //random(unit);
+        }
+    }
+
+    private void move_bad(Unit unit) {
+        Direction d = go_to_bfs(unit.getCell().getPoint(), en_spa.getPoint());
+        if (d != null){
+            if (is_unit(unit.getCell().getPoint(), d, en_team_id))
+                attack(unit, d);
+            else
+                random_attack(unit);
+            move(unit, d);
+        }else{
+            random(unit);
+        }
+        random_attack(unit);
+    }
+
+    @Override
+    public void step() {
+        Init();
+
+        for (Unit unit : getMyUnits()) {
+            if (unit.getId() == 0)
+                System.out.println(unit.isAlive() + " " + unit.isArrived());
+
+            if (unit.isArrived() || !unit.isAlive())
+                continue;
+
+            if (my_team_id == 0)
+                move(unit);
+            else
+                move_bad(unit);
+        }
+    }
+
+    // ************************************* end ***********************************
 }
