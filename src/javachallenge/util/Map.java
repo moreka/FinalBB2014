@@ -325,10 +325,12 @@ public class Map implements Serializable, Cloneable {
                     mineCell2.setAmount(mineCell2.getAmount() + temp.getChangeValue());
                     break;
                 case AGENT_ARRIVE:
-                    cellSr.getUnit().setArrived(true);
-                    Unit unitCell2 = cellSr.getUnit();
-                    unitCell2.setCell(null);
-                    cellSr.setUnit(null);
+                    if (cellSr.getUnit() != null) {
+                        cellSr.getUnit().setArrived(true);
+                        Unit unitCell2 = cellSr.getUnit();
+                        unitCell2.setCell(null);
+                        cellSr.setUnit(null);
+                    }
                     break;
                 case SPAWN:
                     Unit newUnit = new Unit();
@@ -339,9 +341,11 @@ public class Map implements Serializable, Cloneable {
                     break;
                 case AGENT_KILL:
                     Unit unitCell3 = cellSr.getUnit();
-                    unitCell3.setAlive(false);
-                    unitCell3.setCell(null);
-                    cellSr.setUnit(null);
+                    if (unitCell3 != null) {
+                        unitCell3.setAlive(false);
+                        unitCell3.setCell(null);
+                        cellSr.setUnit(null);
+                    }
                     break;
             }
         }
