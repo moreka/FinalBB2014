@@ -123,6 +123,11 @@ public class Game {
         int[] makeWallsNumber = new int[2];
         int[] destroyWallsNumber = new int[2];
 
+        Collections.shuffle(makeWalls);
+        Collections.shuffle(destroyWalls);
+
+        ArrayList<Edge> wallsToBe = new ArrayList<Edge>();
+
         for (Action makeWallAction : makeWalls) {
             try {
                 Cell cell = map.getCellAtPoint(makeWallAction.getPosition());
@@ -131,7 +136,10 @@ public class Game {
                 Team team = getTeam(makeWallAction.getTeamId());
 
                 if (team.getResource() >= COST_MAKE_WALL && edge.getType() == EdgeType.OPEN &&
-                        makeWallsNumber[team.getTeamId()] < WALLS_MADE_PER_TURN) {
+                        makeWallsNumber[team.getTeamId()] < WALLS_MADE_PER_TURN &&
+                        !wallsToBe.contains(edge)) {
+
+                    wallsToBe.add(edge);
 
                     team.decreaseResources(COST_MAKE_WALL);
 
@@ -152,7 +160,10 @@ public class Game {
                 Team team = getTeam(destroyWallAction.getTeamId());
 
                 if (team.getResource() >= COST_DESTROY_WALL && edge.getType() == EdgeType.WALL &&
-                        destroyWallsNumber[team.getTeamId()] < WALLS_DESTROYED_PER_TURN) {
+                        destroyWallsNumber[team.getTeamId()] < WALLS_DESTROYED_PER_TURN &&
+                        !wallsToBe.contains(edge)) {
+
+                    wallsToBe.add(edge);
 
                     team.decreaseResources(COST_DESTROY_WALL);
 

@@ -63,16 +63,37 @@ public class TeamClient extends Client {
 //            else
 //                attack(getMyUnits().get(1), Direction.NORTHWEST);
 //        }
-        if (getTurn() > 1)
-            if (getTurn() < 5)
-                move(getMyUnits().get(0), Direction.SOUTHEAST);
-            else if (getTurn() < 20)
-                move(getMyUnits().get(0), Direction.EAST);
-            else if (getTurn() < 25)
-                move(getMyUnits().get(0), Direction.SOUTHWEST);
-            else if (getTurn() == 25)
-                move(getMyUnits().get(0), Direction.WEST);
+//        if (getTurn() > 1)
+//            if (getTurn() < 5)
+//                move(getMyUnits().get(0), Direction.SOUTHEAST);
+//            else if (getTurn() < 20)
+//                move(getMyUnits().get(0), Direction.EAST);
+//            else if (getTurn() < 25)
+//                move(getMyUnits().get(0), Direction.SOUTHWEST);
+//            else if (getTurn() == 25)
+//                move(getMyUnits().get(0), Direction.WEST);
 //        if (getTurn() == 20 && getMyUnits().get(0).getTeamId() == 1)
 //            move(getMyUnits().get(0), Direction.NORTHEAST);
+        try {
+            if (getTurn() % 6 == 0 && getTurn() > 1 && getMyUnits().get(0).getTeamId() == 0) {
+                makeWall(map.getCellAt(3, 5), Direction.EAST);
+                makeWall(map.getCellAt(3, 5), Direction.SOUTHEAST);
+                makeWall(map.getCellAt(3, 5), Direction.SOUTHWEST);
+                makeWall(map.getCellAt(3, 5), Direction.WEST);
+                makeWall(map.getCellAt(3, 5), Direction.NORTHWEST);
+                makeWall(map.getCellAt(3, 5), Direction.NORTHEAST);
+            } else if ((getTurn() % 6 == 3 && getTurn() > 1 && getMyUnits().get(0).getTeamId() == 0)){
+                destroyWall(map.getCellAt(3, 5), Direction.EAST);
+                destroyWall(map.getCellAt(3, 5), Direction.SOUTHEAST);
+                destroyWall(map.getCellAt(3, 5), Direction.SOUTHWEST);
+                destroyWall(map.getCellAt(3, 5), Direction.WEST);
+                destroyWall(map.getCellAt(3, 5), Direction.NORTHWEST);
+                destroyWall(map.getCellAt(3, 5), Direction.NORTHEAST);
+            }
+            if (getTurn() > 1)
+                move(getMyUnits().get(0), Direction.SOUTHEAST);
+        } catch (CellIsNullException e) {
+            e.printStackTrace();
+        }
     }
 }
