@@ -146,13 +146,13 @@ public class MapMaker {
 
 
                     String awnser = JOptionPane.showInputDialog("Sources[0]:","yes for " + sources[0].getX() + "," + sources[0].getY() + " no for " + sources[1].getX() + "," + sources[1].getY());
-                    if(awnser.toLowerCase() == "no"){
+                    if(awnser.toLowerCase().equals("no")){
                         Point t = sources[1];
                         sources[1] = sources[0];
                         sources[0] = t;
                     }
                     awnser = JOptionPane.showInputDialog("Des[0]:","yes for " + Destination[0].getX() + "," + Destination[0].getY() + " no for " + Destination[1].getX() + "," + Destination[1].getY());
-                    if(awnser.toLowerCase() == "no"){
+                    if(awnser.toLowerCase().equals("no")){
                         Point t = Destination[1];
                         Destination[1] = Destination[0];
                         Destination[0] = t;
