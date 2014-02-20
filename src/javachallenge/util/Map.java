@@ -10,12 +10,10 @@ import java.util.ArrayList;
 
 public class Map implements Serializable, Cloneable {
     private Cell[][] cells;
-
     private ArrayList<MineCell> mines;
     private int sizeX;
     private int sizeY;
     private int MINE_AMOUNT;
-
     private Point[] spawnPoints = new Point[2];
     private Point[] destinationPoints = new Point[2];
 
@@ -210,14 +208,6 @@ public class Map implements Serializable, Cloneable {
         return map;
     }
 
-    public void addMineCell(int x, int y) {
-        mines.add((MineCell) this.cells[x][y]);
-    }
-
-    public void removeMineCell(MineCell e) {
-        mines.remove(e);
-    }
-
     public ArrayList<MineCell> getMines() {
         return mines;
     }
@@ -226,23 +216,6 @@ public class Map implements Serializable, Cloneable {
         if (x >= 0 && x < sizeX && y >= 0 && y < sizeY)
             return true;
         return false;
-    }
-
-    public boolean isNodeInMap(int x, int y) {
-        if (x >= 0 && x <= (2 * this.sizeX + 1) && y >= 0 && y <= sizeY) {
-            if (y == 0 && x == (2 * this.sizeX + 1))
-                return false;
-            if (y % 2 == 0 && y == this.sizeY && x == 0)
-                return false;
-            if (y % 2 == 1 && y == this.sizeY && x == (2 * this.sizeX + 1))
-                return false;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isNodeInMap(Point p) {
-        return isNodeInMap(p.getX(), p.getY());
     }
 
     public Cell getCellAt(int x, int y) throws CellIsNullException {
@@ -426,19 +399,6 @@ public class Map implements Serializable, Cloneable {
             System.out.println();
         }
     }
-/*
-    public void printUnits() {
-        for (int i = 0; i < this.sizeY; i++) {
-            for (int j = 0; j < this.sizeX; j++) {
-                System.out.print(((cells[j][i].getUnit() == null) ? "N" : cells[j][i].getUnit().getId()) + "\t");
-            }
-            System.out.println();
-        }
-    }
-*/
-//    public Edge[] getWalls() {
-//        return walls;
-//    }
 
     public Direction getDirectionFromCellPoint(Cell sr, Point des) throws CellIsNullException {
         for (Direction dir : Direction.values())
