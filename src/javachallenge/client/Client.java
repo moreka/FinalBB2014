@@ -27,6 +27,15 @@ public abstract class Client {
 
     public void update(ServerMessage message) {
         this.map.updateMap(message.getAttackDeltaList());
+        for (Delta delta : message.getAttackDeltaList()) {
+            if ((delta.getType() == DeltaType.AGENT_KILL) && delta.getTeamID() == this.getTeamID()) {
+                for (int i = myUnits.size() - 1; i >= 0; i--)
+                    if (myUnits.get(i).getId() == delta.getUnitID()) {
+                        myUnits.remove(i);
+                        break;
+                    }
+            }
+        }
         this.map.updateMap(message.getMoveDeltaList());
         this.map.updateMap(message.getWallDeltaList());
         this.map.updateMap(message.getOtherDeltaList());
