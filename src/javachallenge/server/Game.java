@@ -72,12 +72,14 @@ public class Game {
         ArrayList<Action> moveActions = new ArrayList<Action>();
         ArrayList<Action> makeWallActions = new ArrayList<Action>();
         ArrayList<Action> destroyWallActions = new ArrayList<Action>();
-
+        if (actions == null)
+            return;
         for (Action action : actions) {
             if (action.isValid())
                 switch (action.getType()) {
                     case MOVE:
-                        moveActions.add(action);
+                        if (actionIsValid(action))
+                            moveActions.add(action);
                         break;
                     case MAKE_WALL:
                         makeWallActions.add(action);
@@ -86,7 +88,8 @@ public class Game {
                         destroyWallActions.add(action);
                         break;
                     case ATTACK:
-                        attackActions.add(action);
+                        if (actionIsValid(action))
+                            attackActions.add(action);
                         break;
                 }
         }
@@ -299,6 +302,7 @@ public class Game {
 
                             otherDeltas.add(new Delta(DeltaType.MINE_CHANGE, sourcePoint, mineCell.getAmount()));
                             otherDeltas.add(new Delta(DeltaType.RESOURCE_CHANGE, unit.getTeamId(), mineCell.getAmount()));
+                            otherDeltas.add(new Delta(DeltaType.MINE_DISAPPEAR, sourcePoint));
                         }
                     }
                 } catch (CellIsNullException e) {
@@ -349,6 +353,20 @@ public class Game {
         }
     }
 
+    private boolean actionIsValid(Action action) {
+        try {
+            if (map.isCellInMap(action.getPosition())) {
+                Unit unit = map.getCellAtPoint(action.getPosition()).getUnit();
+                return unit != null && unit.getTeamId() == action.getTeamId();
+            } else {
+                return false;
+            }
+        } catch (CellIsNullException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void endTurn() {
         handleSpawns();
     }
@@ -367,5 +385,9 @@ public class Game {
 
     public ArrayList<Delta> getOtherDeltasList() {
         return otherDeltas;
+    }
+
+    public ArrayList<Point> getUpdatedPoints() {
+        return null;
     }
 }

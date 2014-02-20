@@ -1,5 +1,6 @@
 package javachallenge.server;
 
+import javachallenge.mapParser.Parser;
 import javachallenge.message.Action;
 import javachallenge.message.InitialMessage;
 import javachallenge.message.ServerMessage;
@@ -9,6 +10,7 @@ import javachallenge.util.Map;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by merhdad on 2/20/14.
@@ -22,45 +24,32 @@ public class MovieServer {
         Map map = Map.loadMap("JC.map");
         Game game = new Game(map);
 
-        DummyGraphics graphics = new DummyGraphics(map);
-        graphics.setVisible(true);
-
         for (int i = 0; i < num_clients; i++) {
             System.out.println("Waiting for player " + i + " to connect ...");
             System.out.println("Player " + i + " connected!");
             game.addTeam(new Team(i, Game.INITIAL_RESOURCE));
         }
 
+        DummyGraphics graphics = new DummyGraphics(map);
+        graphics.setVisible(true);
+
 //        FJframe graphics = new FJframe(game, game.getMap().getSizeY(), game.getMap().getSizeX());
 //        FJpanel panel = graphics.getPanel();
 
         int turn = 0;
 
+        Parser parser = new Parser();
+
+        HashMap<Integer, ArrayList<Action>> allActions = parser.logParser("JavaChallenge.log");
+
         while (!game.isEnded()) {
             System.out.println("Turn: " + (++turn));
 
-            ServerMessage serverMessage = new ServerMessage(
-                    game.getAttackDeltas(),
-                    game.getWallDeltasList(),
-                    game.getMoveDeltasList(),
-                    game.getOtherDeltasList()
-            );
-
-            serverMessage.setGameEnded(game.isEnded());
-
-//            for (ClientConnection c : clientConnections) {
-//                c.getOut().writeObject(serverMessage);
-//                c.getOut().flush();
-//            }
-//
-//            for (ClientConnection c : clientConnections) {
-//                c.setClientMessage(null);
-//            }
-
             Thread.sleep(CYCLE_LENGTH);
 
-            ArrayList<Action> actions = new ArrayList<Action>();
+            ArrayList<Action> actions = allActions.get(turn);
 
+//            actions.addAll()
 //            for (ClientConnection c : clientConnections) {
 //                if (c.getClientMessage() != null)
 //                    if (c.getClientMessage().getActions() != null)
@@ -72,10 +61,6 @@ public class MovieServer {
             game.endTurn();
             game.getMap().updateMap(game.getOtherDeltasList());
             graphics.startAnimation();
-//            Logger.getInstance().logs(game.getAttackDeltas(), turn);
-//            Logger.getInstance().logs(game.getMoveDeltasList(), turn);
-//            Logger.getInstance().logs(game.getWallDeltasList(), turn);
-//            Logger.getInstance().logs(game.getOtherDeltasList(), turn);
         }
 
 //        for (ClientConnection c : clientConnections) {
@@ -84,13 +69,11 @@ public class MovieServer {
 //            );
 //            c.getOut().flush();
 //        }
-
-        Logger.getInstance().close();
     }
 
     public static void main(String[] args) {
         try {
-            new Server().run();
+            new MovieServer().run();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {

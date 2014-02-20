@@ -96,4 +96,8 @@ public class Team {
     public void updateScore(int delta) {
         this.score += delta;
     }
+
+    public int getScore() {
+        return score;
+    }
 }
