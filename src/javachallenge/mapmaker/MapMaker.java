@@ -187,7 +187,6 @@ public class MapMaker {
 
     }
 }
-
 class cellAction implements ActionListener{
     private Color[] col;
     public cellAction(Color[] in){
