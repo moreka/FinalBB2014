@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class Map implements Serializable, Cloneable {
     private Cell[][] cells;
-
     private ArrayList<MineCell> mines;
     private int sizeX;
     private int sizeY;
