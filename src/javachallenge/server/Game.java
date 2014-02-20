@@ -34,6 +34,8 @@ public class Game {
     private ArrayList<Delta> attackDeltas = new ArrayList<Delta>();
     private ArrayList<Delta> otherDeltas = new ArrayList<Delta>();
 
+    private ArrayList<Point> updatedPoints = new ArrayList<Point>();
+
     private int turn;
     private int winner;
 
@@ -291,16 +293,17 @@ public class Game {
                             map.getCellAtPoint(sourcePoint).getType() == CellType.MINE) {
 
                         MineCell mineCell = (MineCell) map.getCellAtPoint(sourcePoint);
-                        if (mineCell.getAmount() >= MINE_RATE) {
+                        if (mineCell.getAmount() > MINE_RATE) {
                             getTeam(unit.getTeamId()).increaseResources(MINE_RATE);
 
-                            otherDeltas.add(new Delta(DeltaType.MINE_CHANGE, sourcePoint, MINE_RATE));
+                            otherDeltas.add(new Delta(DeltaType.MINE_CHANGE, sourcePoint, -MINE_RATE));
                             otherDeltas.add(new Delta(DeltaType.RESOURCE_CHANGE, unit.getTeamId(), MINE_RATE));
 
                         } else if (mineCell.getAmount() > 0) {
                             getTeam(unit.getTeamId()).increaseResources(mineCell.getAmount());
+                            updatedPoints.add(mineCell.getPoint());
 
-                            otherDeltas.add(new Delta(DeltaType.MINE_CHANGE, sourcePoint, mineCell.getAmount()));
+                            otherDeltas.add(new Delta(DeltaType.MINE_CHANGE, sourcePoint, -mineCell.getAmount()));
                             otherDeltas.add(new Delta(DeltaType.RESOURCE_CHANGE, unit.getTeamId(), mineCell.getAmount()));
                             otherDeltas.add(new Delta(DeltaType.MINE_DISAPPEAR, sourcePoint));
                         }
@@ -333,7 +336,7 @@ public class Game {
     }
 
     public void handleSpawns() {
-        if (turn % UNIT_SPAWN_RATE == 0) {
+        if (turn % UNIT_SPAWN_RATE == 1) {
             for (Team team : teams) {
                 try {
                     if (map.getCellAtPoint(map.getSpawnPoint(team.getTeamId())).getUnit() == null) {
@@ -369,6 +372,7 @@ public class Game {
 
     public void endTurn() {
         handleSpawns();
+        updatedPoints.clear();
     }
 
     public ArrayList<Delta> getAttackDeltas() {
@@ -388,6 +392,6 @@ public class Game {
     }
 
     public ArrayList<Point> getUpdatedPoints() {
-        return null;
+        return updatedPoints;
     }
 }

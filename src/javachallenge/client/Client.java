@@ -45,7 +45,7 @@ public abstract class Client {
             else if ((delta.getType() == DeltaType.AGENT_KILL || delta.getType() == DeltaType.AGENT_ARRIVE)
                     && delta.getTeamID() == this.getTeamID()) {
 
-                for (int i = 0; i < myUnits.size(); i++)
+                for (int i = myUnits.size() - 1; i >= myUnits.size(); i--)
                     if (myUnits.get(i).getId() == delta.getUnitID()) {
                         myUnits.remove(i);
                         break;
@@ -108,7 +108,7 @@ public abstract class Client {
     }
 
     public void move(Unit unit, Direction direction) {
-        if (!unit.isArrived())
+        if (unit != null && !unit.isArrived() && unit.isAlive())
             actionList.add(new Action(
                     ActionType.MOVE,
                     unit.getCell().getPoint(),
@@ -135,13 +135,12 @@ public abstract class Client {
     }
 
     public void attack(Unit unit, Direction direction) {
-        if (unit == null)
-            return;
-        actionList.add(new Action(
-                ActionType.ATTACK,
-                unit.getCell().getPoint(),
-                direction,
-                getTeamID()));
+        if (unit != null && !unit.isArrived() && unit.isAlive())
+            actionList.add(new Action(
+            ActionType.ATTACK,
+            unit.getCell().getPoint(),
+            direction,
+            getTeamID()));
     }
 
     public int getTeamID() {
