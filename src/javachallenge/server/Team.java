@@ -25,6 +25,11 @@ public class Team {
         units = new ArrayList<Unit>();
     }
 
+    public Team(int teamId, String teamName, int resource) {
+        this(teamId, resource);
+        setName(teamName);
+    }
+
     public String getName() {
         return name;
     }

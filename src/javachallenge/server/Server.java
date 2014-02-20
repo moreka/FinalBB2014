@@ -20,7 +20,7 @@ public class Server {
     public void run() throws InterruptedException, IOException, ClassNotFoundException {
         int num_clients = 2;
 
-        String team1 = "Koskeshaa", team2 = "Koondehaa";
+        String[] teamName = {"Koskeshaa", "Koondehaa"};
 
         ClientConnection[] clientConnections = new ClientConnection[num_clients];
 
@@ -38,12 +38,12 @@ public class Server {
             System.out.println("Player " + i + " connected!");
         }
 
-        graphics.setTeam1NameLabel(team1);
-        graphics.setTeam2NameLabel(team2);
+        graphics.setTeam1NameLabel(teamName[0]);
+        graphics.setTeam2NameLabel(teamName[1]);
 
         int i = 0;
         for (ClientConnection c : clientConnections) {
-            game.addTeam(new Team(i, Game.INITIAL_RESOURCE));
+            game.addTeam(new Team(i, teamName[i], Game.INITIAL_RESOURCE));
             c.getOut().writeObject(new InitialMessage(map.getString(), i, Game.INITIAL_RESOURCE));
             c.getOut().flush();
             i++;
