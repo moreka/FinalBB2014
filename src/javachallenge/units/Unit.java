@@ -49,4 +49,16 @@ public class Unit {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Unit other = (Unit) obj;
+        return this.id == other.id && this.teamId == other.teamId;
+    }
 }

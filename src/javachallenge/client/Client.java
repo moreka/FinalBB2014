@@ -31,7 +31,7 @@ public abstract class Client {
             if ((delta.getType() == DeltaType.AGENT_KILL) && delta.getTeamID() == this.getTeamID()) {
                 for (int i = myUnits.size() - 1; i >= 0; i--)
                     if (myUnits.get(i).getId() == delta.getUnitID()) {
-                        myUnits.remove(i);
+                        myUnits.get(i).setAlive(false);
                         break;
                     }
             }
@@ -51,12 +51,17 @@ public abstract class Client {
             else if (delta.getType() == DeltaType.RESOURCE_CHANGE && delta.getTeamID() == this.getTeamID()){
                 this.resources = this.resources + delta.getChangeValue();
             }
-            else if ((delta.getType() == DeltaType.AGENT_KILL || delta.getType() == DeltaType.AGENT_ARRIVE)
-                    && delta.getTeamID() == this.getTeamID()) {
-
+            else if (delta.getType() == DeltaType.AGENT_KILL&& delta.getTeamID() == this.getTeamID()) {
                 for (int i = myUnits.size() - 1; i >= 0; i--)
                     if (myUnits.get(i).getId() == delta.getUnitID()) {
-                        myUnits.remove(i);
+                        myUnits.get(i).setAlive(false);
+                        break;
+                    }
+            }
+            else if (delta.getType() == DeltaType.AGENT_ARRIVE&& delta.getTeamID() == this.getTeamID()) {
+                for (int i = myUnits.size() - 1; i >= 0; i--)
+                    if (myUnits.get(i).getId() == delta.getUnitID()) {
+                        myUnits.get(i).setArrived(true);
                         break;
                     }
             }
