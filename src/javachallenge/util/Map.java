@@ -338,7 +338,6 @@ public class Map implements Serializable, Cloneable {
                     MineCell mineCell = (MineCell) cellSr;
                     mineCell.setAmount(0);
                     cellSr.setType(CellType.TERRAIN);
-                    System.out.println("Mine Diss "  + cellSr.getType());
                     mines.remove(mineCell);
                     break;
                 case MINE_CHANGE:

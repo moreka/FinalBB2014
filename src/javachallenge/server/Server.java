@@ -87,9 +87,9 @@ public class Server {
             game.initTurn(turn);
             Logger.getInstance().logs(actions, turn);
             game.handleActions(actions);
-            graphics.updateBackground(game.getUpdatedPoints());
             game.endTurn();
             game.getMap().updateMap(game.getOtherDeltasList());
+            graphics.updateBackground(game.getUpdatedPoints());
             graphics.startAnimation();
             graphics.setTeam1ScoreLabel(game.getTeam(0).getScore());
             graphics.setTeam2ScoreLabel(game.getTeam(1).getScore());

@@ -43,35 +43,35 @@ public class TeamClient extends Client {
 //            flags = new boolean[map.getSizeX()][map.getSizeY()];
 //            move(getMyUnits().get(i), findPath(getMyUnits().get(i).getCell(), getMap().getMines().get(0)));
 //        }
-        if (getTurn() > 1 && getTurn() < 17) {
-            if (getTurn() % 2 == 0) {
-                move(getMyUnits().get(0), Direction.SOUTHWEST);
-            } else {
-                move(getMyUnits().get(0), Direction.SOUTHEAST);
-            }
-            attack(getMyUnits().get(0), Direction.SOUTHEAST);
-        } else if (getTurn() > 16) {
-            move(getMyUnits().get(0), Direction.EAST);
-        }
-        if (getTurn() > 20 && getMyUnits().get(0).getTeamId() == 1) {
-            move(getMyUnits().get(2), Direction.EAST);
-        } else if (getTurn() > 20 && getMyUnits().get(0).getTeamId() == 0)
-            move(getMyUnits().get(1), Direction.EAST);
+//        if (getTurn() > 1 && getTurn() < 17) {
+//            if (getTurn() % 2 == 0) {
+//                move(getMyUnits().get(0), Direction.SOUTHWEST);
+//            } else {
+//                move(getMyUnits().get(0), Direction.SOUTHEAST);
+//            }
+//            attack(getMyUnits().get(0), Direction.SOUTHEAST);
+//        } else if (getTurn() > 16) {
+//            move(getMyUnits().get(0), Direction.EAST);
+//        }
+//        if (getTurn() > 20 && getMyUnits().get(0).getTeamId() == 1) {
+//            move(getMyUnits().get(2), Direction.EAST);
+//        } else if (getTurn() > 20 && getMyUnits().get(0).getTeamId() == 0)
+//            move(getMyUnits().get(1), Direction.EAST);
 //        if (getTurn() > 6) {
 //            if (getMyUnits().get(0).getTeamId() == 0)
 //                attack(getMyUnits().get(0), Direction.SOUTHEAST);
 //            else
 //                attack(getMyUnits().get(1), Direction.NORTHWEST);
 //        }
-//        if (getTurn() > 1)
-//            if (getTurn() < 5)
-//                move(getMyUnits().get(0), Direction.SOUTHEAST);
-//            else if (getTurn() < 20)
-//                move(getMyUnits().get(0), Direction.EAST);
-//            else if (getTurn() < 25)
-//                move(getMyUnits().get(0), Direction.SOUTHWEST);
-//            else if (getTurn() == 25)
-//                move(getMyUnits().get(0), Direction.WEST);
+        if (getTurn() > 1)
+            if (getTurn() < 5)
+                move(getMyUnits().get(0), Direction.SOUTHEAST);
+            else if (getTurn() < 20)
+                move(getMyUnits().get(0), Direction.EAST);
+            else if (getTurn() < 25)
+                move(getMyUnits().get(0), Direction.SOUTHWEST);
+            else if (getTurn() == 25)
+                move(getMyUnits().get(0), Direction.WEST);
 //        if (getTurn() == 20 && getMyUnits().get(0).getTeamId() == 1)
 //            move(getMyUnits().get(0), Direction.NORTHEAST);
     }
