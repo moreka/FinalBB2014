@@ -20,6 +20,8 @@ public class Server {
     public void run() throws InterruptedException, IOException, ClassNotFoundException {
         int num_clients = 2;
 
+        String team1 = "Koskeshaa", team2 = "Koondehaa";
+
         ClientConnection[] clientConnections = new ClientConnection[num_clients];
 
         ServerSocket serverSocket = new ServerSocket(PORT);
@@ -36,6 +38,9 @@ public class Server {
             System.out.println("Player " + i + " connected!");
         }
 
+        graphics.setTeam1NameLabel(team1);
+        graphics.setTeam2NameLabel(team2);
+
         int i = 0;
         for (ClientConnection c : clientConnections) {
             game.addTeam(new Team(i, Game.INITIAL_RESOURCE));
@@ -44,13 +49,12 @@ public class Server {
             i++;
         }
 
-//        FJframe graphics = new FJframe(game, game.getMap().getSizeY(), game.getMap().getSizeX());
-//        FJpanel panel = graphics.getPanel();
-
         int turn = 0;
 
         while (!game.isEnded()) {
             System.out.println("Turn: " + (++turn));
+
+            graphics.setTurnNumberLabel(turn);
 
             ServerMessage serverMessage = new ServerMessage(
                     game.getAttackDeltas(),
@@ -86,6 +90,10 @@ public class Server {
             game.endTurn();
             game.getMap().updateMap(game.getOtherDeltasList());
             graphics.startAnimation();
+            graphics.setTeam1ScoreLabel(game.getTeam(0).getScore());
+            graphics.setTeam2ScoreLabel(game.getTeam(1).getScore());
+            graphics.setTeam1ResourceLabel(game.getTeam(0).getResource());
+            graphics.setTeam2ResourceLabel(game.getTeam(1).getResource());
         }
 
         for (ClientConnection c : clientConnections) {
