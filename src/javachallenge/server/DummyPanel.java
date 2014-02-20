@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DummyPanel extends JPanel {
@@ -235,6 +236,24 @@ public class DummyPanel extends JPanel {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public void updateBackground(ArrayList<Point> updatedPoints) {
+        if (updatedPoints == null || updatedPoints.size() == 0)
+            return;
+
+        Graphics2D g = (Graphics2D) background.getGraphics();
+        for (Point p : updatedPoints) {
+            int x, y = p.getY() * (SIZE - 1) * 3 / 4;
+            if (p.getY() % 2 == 0)
+                x = p.getX() * SIZE;
+            else
+                x = p.getX() * SIZE + (SIZE / 2);
+            g.drawImage(cellsImg[0], x, y, null);
+            try {
+                g.drawImage(cellsImg[map.getCellAtPoint(p).getType().ordinal()], x, y, null);
+            } catch (CellIsNullException e) { }
         }
     }
 }
