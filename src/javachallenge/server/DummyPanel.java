@@ -167,8 +167,8 @@ public class DummyPanel extends JPanel {
     private void drawWalls() {
         Graphics2D g = (Graphics2D) bufferImage.getGraphics();
 
-        int[] xEdge = { SIZE / 2, SIZE, SIZE, SIZE / 2, 0, 0 };
-        int[] yEdge = { 0, SIZE / 4, SIZE * 3 / 4, SIZE, SIZE * 3 / 4, SIZE / 4};
+//        int[] xEdge = { SIZE / 2, SIZE, SIZE, SIZE / 2, 0, 0 };
+//        int[] yEdge = { 0, SIZE / 4, SIZE * 3 / 4, SIZE, SIZE * 3 / 4, SIZE / 4};
 
         g.setColor(Color.BLACK);
         g.setStroke(new BasicStroke(6));

@@ -386,4 +386,8 @@ public class Game {
     public ArrayList<Delta> getOtherDeltasList() {
         return otherDeltas;
     }
+
+    public ArrayList<Point> getUpdatedPoints() {
+        return null;
+    }
 }

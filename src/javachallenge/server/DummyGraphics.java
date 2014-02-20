@@ -1,10 +1,12 @@
 package javachallenge.server;
 
-import javachallenge.util.Map;
+import javachallenge.util.*;
+import javachallenge.util.Point;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class DummyGraphics extends JFrame {
 
@@ -85,5 +87,9 @@ public class DummyGraphics extends JFrame {
 
     public void setTeam2ResourceLabel(int resource) {
         team2ResourceLabel.setText("Resources: " + resource);
+    }
+
+    public void updateBackground(ArrayList<Point> updatedPoints) {
+
     }
 }
