@@ -75,10 +75,21 @@ public class TeamClient extends Client {
 //        if (getTurn() == 20 && getMyUnits().get(0).getTeamId() == 1)
 //            move(getMyUnits().get(0), Direction.NORTHEAST);
         try {
-            if (getTurn() % 2 == 0)
+            if (getTurn() % 6 == 0 && getTurn() > 1 && getMyUnits().get(0).getTeamId() == 0) {
+                makeWall(map.getCellAt(3, 5), Direction.EAST);
                 makeWall(map.getCellAt(3, 5), Direction.SOUTHEAST);
-            else
+                makeWall(map.getCellAt(3, 5), Direction.SOUTHWEST);
+                makeWall(map.getCellAt(3, 5), Direction.WEST);
+                makeWall(map.getCellAt(3, 5), Direction.NORTHWEST);
+                makeWall(map.getCellAt(3, 5), Direction.NORTHEAST);
+            } else if ((getTurn() % 6 == 3 && getTurn() > 1 && getMyUnits().get(0).getTeamId() == 0)){
+                destroyWall(map.getCellAt(3, 5), Direction.EAST);
                 destroyWall(map.getCellAt(3, 5), Direction.SOUTHEAST);
+                destroyWall(map.getCellAt(3, 5), Direction.SOUTHWEST);
+                destroyWall(map.getCellAt(3, 5), Direction.WEST);
+                destroyWall(map.getCellAt(3, 5), Direction.NORTHWEST);
+                destroyWall(map.getCellAt(3, 5), Direction.NORTHEAST);
+            }
             if (getTurn() > 1)
                 move(getMyUnits().get(0), Direction.SOUTHEAST);
         } catch (CellIsNullException e) {
