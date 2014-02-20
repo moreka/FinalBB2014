@@ -17,10 +17,10 @@ public class Server {
     public static int CYCLE_LENGTH = 500;
     public static int PORT = 20140;
 
-    public void run() throws InterruptedException, IOException, ClassNotFoundException {
+    public void run(String team1, String team2) throws InterruptedException, IOException, ClassNotFoundException {
         int num_clients = 2;
 
-        String[] teamName = {"Koskeshaa", "Koondehaa"};
+        String[] teamName = {team1, team2};
 
         ClientConnection[] clientConnections = new ClientConnection[num_clients];
 
@@ -110,7 +110,7 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            new Server().run();
+            new Server().run(args[0], args[1]);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
