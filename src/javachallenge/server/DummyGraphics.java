@@ -90,6 +90,6 @@ public class DummyGraphics extends JFrame {
     }
 
     public void updateBackground(ArrayList<Point> updatedPoints) {
-
+        dummyPanel.updateBackground(updatedPoints);
     }
 }
