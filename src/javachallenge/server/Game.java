@@ -141,6 +141,7 @@ public class Game {
 
                     wallsToBe.add(edge);
 
+
                     team.decreaseResources(COST_MAKE_WALL);
 
                     makeWallsNumber[team.getTeamId()]++;
