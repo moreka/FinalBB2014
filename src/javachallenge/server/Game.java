@@ -7,6 +7,7 @@ import javachallenge.message.Delta;
 import javachallenge.message.DeltaType;
 import javachallenge.util.*;
 import javachallenge.util.Map;
+import org.omg.DynamicAny._DynUnionStub;
 
 import java.util.*;
 
@@ -198,6 +199,8 @@ public class Game {
 
         // moves units to their destination blindly
         for (Action moveAction : moves) {
+            if (!moveAction.isValid())
+                continue;
             try {
                 Cell source = map.getCellAtPoint(moveAction.getPosition());
                 Unit unit = source.getUnit();
@@ -218,6 +221,12 @@ public class Game {
         // find cells with multiple units inside
         for (int i = 0; i < map.getSizeX(); i++)
             for (int j = 0; j < map.getSizeY(); j++)
+                for (int k = future[i][j].size() - 1; k >= 0; k--)
+                    if (future[i][j].get(k) == null)
+                        future[i][j].remove(k);
+
+        for (int i = 0; i < map.getSizeX(); i++)
+            for (int j = 0; j < map.getSizeY(); j++)
                 if (future[i][j].size() > 1)
                     overloadedCells.add(new Point(i, j));
 
@@ -234,6 +243,7 @@ public class Game {
             Unit stayer = null;
             for (int i = 0; i < overloadedNumber; i++) {
                 Unit existent = future[temp.getX()][temp.getY()].get(i);
+
                 if (existent.getCell().getPoint().equals(temp)) {
                     isDestinationFull = true;
                     stayer = existent;
@@ -277,6 +287,7 @@ public class Game {
 
                 Unit unit = future[i][j].get(0);
                 Cell unitCell = unit.getCell();
+
                 Point sourcePoint = unitCell.getPoint();
                 Point here = new Point(i, j);
 
@@ -374,7 +385,10 @@ public class Game {
         try {
             if (map.isCellInMap(action.getPosition())) {
                 Unit unit = map.getCellAtPoint(action.getPosition()).getUnit();
-                return unit != null && unit.getTeamId() == action.getTeamId();
+                if (unit != null && unit.getTeamId() == action.getTeamId())
+                    return true;
+                else
+                    return false;
             } else {
                 return false;
             }

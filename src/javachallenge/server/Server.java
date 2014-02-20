@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class Server {
 
-    public static int CYCLE_LENGTH = 500;
+    public static int CYCLE_LENGTH = 300;
     public static int PORT = 20140;
 
     public void run(String team1, String team2) throws InterruptedException, IOException, ClassNotFoundException {
