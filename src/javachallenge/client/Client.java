@@ -45,7 +45,7 @@ public abstract class Client {
             else if ((delta.getType() == DeltaType.AGENT_KILL || delta.getType() == DeltaType.AGENT_ARRIVE)
                     && delta.getTeamID() == this.getTeamID()) {
 
-                for (int i = myUnits.size() - 1; i >= myUnits.size(); i--)
+                for (int i = myUnits.size() - 1; i >= 0; i--)
                     if (myUnits.get(i).getId() == delta.getUnitID()) {
                         myUnits.remove(i);
                         break;
