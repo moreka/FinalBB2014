@@ -65,42 +65,46 @@ public abstract class Client {
     }
 
     public ClientMessage end() {
-//        boolean[] mark = new boolean[actionList.size()];
-//
-//        for (int i = actionList.size() - 1; i >= 0; i++) {
-//            if (!mark[i]) {
-//                Action current = actionList.get(i);
-//                switch (current.getType()) {
-//                    case MOVE:
-//                    case ATTACK:
-//                    {
-//                        for (int j = i-1; j >= 0; j--) {
-//                            if (actionList.get(j).getType() == current.getType()
-//                                    && actionList.get(j).getPosition().equals(current.getPosition())) {
-//
-//                                mark[j] = true;
-//                            }
-//                        }
-//                        break;
-//                    }
-//                    case DESTROY_WALL:
-//                    case MAKE_WALL:
-//                    {
-//                        for (int j = i-1; j >= 0; j--) {
-//                            if ((actionList.get(j).getType() == ActionType.DESTROY_WALL ||
-//                                    actionList.get(j).getType() == ActionType.MAKE_WALL)
-//                                    && actionList.get(j).getPosition().equals(current.getPosition())
-//                                    && actionList.get(j).getDirection() == current.getDirection()) {
-//
-//                                mark[j] = true;
-//                            }
-//                        }
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-        return new ClientMessage(actionList);
+        boolean[] mark = new boolean[actionList.size()];
+
+        for (int i = (actionList.size() - 1); i >= 0; i--) {
+            if (!mark[i]) {
+                Action current = actionList.get(i);
+                switch (current.getType()) {
+                    case MOVE:
+                    case ATTACK:
+                    {
+                        for (int j = i-1; j >= 0; j--) {
+                            if (actionList.get(j).getType() == current.getType()
+                                    && actionList.get(j).getPosition().equals(current.getPosition())) {
+
+                                mark[j] = true;
+                            }
+                        }
+                        break;
+                    }
+                    case DESTROY_WALL:
+                    case MAKE_WALL:
+                    {
+                        for (int j = i-1; j >= 0; j--) {
+                            if ((actionList.get(j).getType() == ActionType.DESTROY_WALL ||
+                                    actionList.get(j).getType() == ActionType.MAKE_WALL)
+                                    && actionList.get(j).getPosition().equals(current.getPosition())
+                                    && actionList.get(j).getDirection() == current.getDirection()) {
+
+                                mark[j] = true;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        ArrayList<Action> newActionList = new ArrayList<Action>();
+        for (int i = 0; i < actionList.size(); i++)
+            if (!mark[i])
+                newActionList.add(actionList.get(i));
+        return new ClientMessage(newActionList);
     }
 
     public void move(Unit unit, Direction direction) {
