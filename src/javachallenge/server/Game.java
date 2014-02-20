@@ -15,11 +15,11 @@ public class Game {
     private static final int MINE_RATE = 4;                 // resource per turn
     private static final int COST_MAKE_WALL = 10;
     private static final int COST_DESTROY_WALL = 6;
-    private static final int GAME_LENGTH = 50;             // turn
-    private static final int UNIT_SPAWN_RATE = 2;           // each 2 turn
+    private static final int GAME_LENGTH = 700;             // turn
+    private static final int UNIT_SPAWN_RATE = 4;           // each 2 turn
     private static final int WALLS_MADE_PER_TURN = 3;
     private static final int WALLS_DESTROYED_PER_TURN = 2;
-    public static final int INITIAL_RESOURCE = 150;         // each team's initial resource
+    public static final int INITIAL_RESOURCE = 50;         // each team's initial resource
 
     private static final int UNIT_ARRIVAL_SCORE = 5;
 
