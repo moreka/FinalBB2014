@@ -2,7 +2,6 @@ package javachallenge.util;
 
 import com.google.gson.Gson;
 import javachallenge.message.Action;
-import javachallenge.message.Delta;
 
 import java.io.FileWriter;
 import java.io.IOException;

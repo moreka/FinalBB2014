@@ -46,9 +46,7 @@ public class TeamClient extends Client {
         if (getTurn() > 2) {
             if (getTurn() % 2 == 0) {
                 move(getMyUnits().get(0), Direction.SOUTHWEST);
-                move(getMyUnits().get(0), Direction.SOUTHWEST);
             } else {
-                move(getMyUnits().get(0), Direction.SOUTHEAST);
                 move(getMyUnits().get(0), Direction.SOUTHEAST);
             }
             attack(getMyUnits().get(0), Direction.SOUTHEAST);
