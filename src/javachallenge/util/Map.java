@@ -92,26 +92,6 @@ public class Map implements Serializable, Cloneable {
                 }
             }
         }
-        /*
-        int wall_Pointer = 0;
-        for(int i = 0; i < 2 * sizeX + 2; i++){
-            for(int j = 0; j < sizeY + 1; j++)
-                if((i + j) % 2 == 1 && isNodeInMap(i,j)){
-                    if(!this.nodes[i][j].getEdge(NodeDirection.NORTH).getType().equals(EdgeType.NONE)){
-                        walls[wall_Pointer] = this.nodes[i][j].getEdge(NodeDirection.NORTH);
-                        wall_Pointer++;
-                    }
-                    if(!this.nodes[i][j].getEdge(NodeDirection.SOUTHEAST).getType().equals(EdgeType.NONE)){
-                        walls[wall_Pointer] = this.nodes[i][j].getEdge(NodeDirection.SOUTHEAST);
-                        wall_Pointer++;
-                    }
-                    if(!this.nodes[i][j].getEdge(NodeDirection.SOUTHWEST).getType().equals(EdgeType.NONE)){
-                        walls[wall_Pointer] = this.nodes[i][j].getEdge(NodeDirection.SOUTHWEST);
-                        wall_Pointer++;
-                    }
-                }
-        }
-        */
     }
 
     public static Map loadMap(String mapAddr) throws IOException, IndexOutOfBoundsException {
@@ -408,16 +388,6 @@ public class Map implements Serializable, Cloneable {
             if (getNeighborCell(sr, dir).equals(this.cells[des.getX()][des.getY()]))
                 return dir;
         throw new CellIsNullException();
-    }
-
-    public static void main(String[] args) {
-        // map tester!
-        try {
-            Map m = Map.loadMap("net.map");
-            m.print();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public String getString() {
