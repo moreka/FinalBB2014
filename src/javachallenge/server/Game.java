@@ -108,8 +108,9 @@ public class Game {
         for (Action attack: attacks) {
             try {
                 Cell cell = map.getCellAtPoint(attack.getPosition());
+                Edge edge = cell.getEdge(attack.getDirection());
                 Cell neighborCell = map.getNeighborCell(cell, attack.getDirection());
-                if (neighborCell.isGround()) {
+                if (neighborCell.isGround() && edge.getType() == EdgeType.OPEN) {
                     attackDeltas.add(new Delta(DeltaType.AGENT_ATTACK, cell.getPoint(), attack.getDirection()));
                     if(neighborCell.getUnit() != null && neighborCell.getUnit().getTeamId() != cell.getUnit().getTeamId())
                         attackDeltas.add(new Delta(DeltaType.AGENT_KILL, neighborCell.getPoint()));
