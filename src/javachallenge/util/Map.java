@@ -307,9 +307,13 @@ public class Map implements Serializable, Cloneable {
 
     public void updateMap(ArrayList<Delta> deltaList) {
         ArrayList<Unit>[][] oldUnits = initUpdate();
+        if (deltaList == null)
+            return;
 
         for (Delta temp : deltaList) {
-            Cell cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
+            Cell cellSr = null;
+            if (temp.getPoint() != null)
+                cellSr = this.cells[temp.getPoint().getX()][temp.getPoint().getY()];
             switch (temp.getType()) {
                 case WALL_MAKE:
                     cellSr.getEdge(temp.getDirection()).setType(EdgeType.WALL);

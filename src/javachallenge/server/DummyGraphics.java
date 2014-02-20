@@ -20,6 +20,8 @@ public class DummyGraphics extends JFrame {
     JLabel team2ScoreLabel = new JLabel("Score: --");
     JLabel team2ResourceLabel = new JLabel("Resources: --");
 
+    JPanel statusPanel;
+
     public DummyGraphics(Map map) throws HeadlessException, IOException {
         super("Java Challenge Tester");
 
@@ -38,7 +40,7 @@ public class DummyGraphics extends JFrame {
         contentPane.setPreferredSize(new Dimension(1000, 700));
         contentPane.add(scrollPane);
 
-        JPanel statusPanel = new JPanel();
+        statusPanel = new JPanel();
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
 
         statusPanel.add(turnNumberLabel);
@@ -90,6 +92,10 @@ public class DummyGraphics extends JFrame {
     }
 
     public void updateBackground(ArrayList<Point> updatedPoints) {
+        dummyPanel.updateBackground(updatedPoints);
+    }
 
+    public void updateScorePanel() {
+        statusPanel.repaint();
     }
 }

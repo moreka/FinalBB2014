@@ -15,7 +15,7 @@ public class Game {
     private static final int MINE_RATE = 4;                 // resource per turn
     private static final int COST_MAKE_WALL = 10;
     private static final int COST_DESTROY_WALL = 6;
-    private static final int GAME_LENGTH = 700;             // turn
+    private static final int GAME_LENGTH = 50;             // turn
     private static final int UNIT_SPAWN_RATE = 2;           // each 2 turn
     private static final int WALLS_MADE_PER_TURN = 3;
     private static final int WALLS_DESTROYED_PER_TURN = 2;
@@ -33,6 +33,8 @@ public class Game {
     private ArrayList<Delta> moveDeltas = new ArrayList<Delta>();
     private ArrayList<Delta> attackDeltas = new ArrayList<Delta>();
     private ArrayList<Delta> otherDeltas = new ArrayList<Delta>();
+
+    private ArrayList<Point> updatedPoints = new ArrayList<Point>();
 
     private int turn;
     private int winner;
@@ -291,16 +293,17 @@ public class Game {
                             map.getCellAtPoint(sourcePoint).getType() == CellType.MINE) {
 
                         MineCell mineCell = (MineCell) map.getCellAtPoint(sourcePoint);
-                        if (mineCell.getAmount() >= MINE_RATE) {
+                        if (mineCell.getAmount() > MINE_RATE) {
                             getTeam(unit.getTeamId()).increaseResources(MINE_RATE);
 
-                            otherDeltas.add(new Delta(DeltaType.MINE_CHANGE, sourcePoint, MINE_RATE));
+                            otherDeltas.add(new Delta(DeltaType.MINE_CHANGE, sourcePoint, -MINE_RATE));
                             otherDeltas.add(new Delta(DeltaType.RESOURCE_CHANGE, unit.getTeamId(), MINE_RATE));
 
                         } else if (mineCell.getAmount() > 0) {
                             getTeam(unit.getTeamId()).increaseResources(mineCell.getAmount());
+                            updatedPoints.add(mineCell.getPoint());
 
-                            otherDeltas.add(new Delta(DeltaType.MINE_CHANGE, sourcePoint, mineCell.getAmount()));
+                            otherDeltas.add(new Delta(DeltaType.MINE_CHANGE, sourcePoint, -mineCell.getAmount()));
                             otherDeltas.add(new Delta(DeltaType.RESOURCE_CHANGE, unit.getTeamId(), mineCell.getAmount()));
                             otherDeltas.add(new Delta(DeltaType.MINE_DISAPPEAR, sourcePoint));
                         }
@@ -317,6 +320,8 @@ public class Game {
         moveDeltas = new ArrayList<Delta>();
         otherDeltas = new ArrayList<Delta>();
 
+        updatedPoints.clear();
+
         this.turn = turn;
         if (turn == GAME_LENGTH) {
             ended = true;
@@ -329,11 +334,12 @@ public class Game {
                     winner = 0;
                 else if (teams[0].getResource() < teams[1].getResource())
                     winner = 1;
+            System.out.println("Winner is: " + teams[winner].getName());
         }
     }
 
     public void handleSpawns() {
-        if (turn % UNIT_SPAWN_RATE == 0) {
+        if (turn % UNIT_SPAWN_RATE == 1) {
             for (Team team : teams) {
                 try {
                     if (map.getCellAtPoint(map.getSpawnPoint(team.getTeamId())).getUnit() == null) {
@@ -388,6 +394,6 @@ public class Game {
     }
 
     public ArrayList<Point> getUpdatedPoints() {
-        return null;
+        return updatedPoints;
     }
 }
